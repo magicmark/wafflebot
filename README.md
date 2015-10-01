@@ -1,0 +1,2 @@
+# wafflebot
+An IRC wafflebot
