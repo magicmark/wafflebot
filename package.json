@@ -1,0 +1,24 @@
+{
+  "name": "wafflebot",
+  "version": "1.0.0",
+  "description": "An IRC Wafflebot",
+  "main": "wafflebot.js",
+  "dependencies": {
+    "irc": "^0.4.0",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magicmark/wafflebot.git"
+  },
+  "author": "Mark Larah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/magicmark/wafflebot/issues"
+  },
+  "homepage": "https://github.com/magicmark/wafflebot"
+}

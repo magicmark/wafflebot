@@ -1,69 +1,36 @@
-var irc = require('irc');
+ "use strict";
 
-var config = {
-    userName: 'WaffleBot',
-    realName: 'WaffleBot',
-    // localAddress: 'kitchen.yelp.com',
-    port: 6697,
-    password: 'passwordhere',
-    channels: ['#wafflebot', '#battleground', '#frontend'],
-    autoConnect: true,
-    secure: true,
-    sasl: false
-};
+/* Dependencies */
+var MessageHandler = require('./handlemessage.js');
+var connection     = require('./ircconnect.js');
 
+/* Initialise connection vars */
+var server, password, handler;
+server   = process.env.WBSERVER;
+password = process.env.WBPASSWORD;
 
-var waffle = [
-'        _.-------._      ',
-"      .' _|_|_|_|_ '.    ",
-'     / _|_|_|_|_|_|_  \\   ',
-'    |_|_|_|_|_|_|_|_|_|  ',
-'    | |_|_|_|_|_|_|_| |  ',
-'     \\ -|_|_|_|_|_|-  /   ',
-"      '. -|_|_|_|- .'    ",
-'        `---------`      '].join('\n');
-
-
-// TODO: make the keys regexes and iterate through them
-var stockResponses = {
-    'i would like a waffle': '{from} would rather like a waffle.',
-    'waffle me': waffle
-};
-
-var handleStockResponse = function (from, to, message) {
-    message = message.toLowerCase();
-
-    var stockResponse = stockResponses[message];
-    if (stockResponse) {
-        return stockResponse.replace('{from}', from);
-    }
-
-};
-
-var handleCustomResponse = function (from, to, message) {
-    messagse = message.toLowerCase();
-
-    if (message == 'wafflebot fight marley') {
-        client.action(to, 'Commencing battle.');
-        setTimeout(function () {
-            client.say(to, 'marley i feel the need');
-        }, 1250);
-        setTimeout(function () {
-            client.say(to, 'marley come on and slam');
-        }, 2320);
-    }
-
+if (!server || !password) {
+    console.log('Pleae provide valid IRC server and password as such:');
+    console.log('$ WBSERVER=serverhere WBPASSWORD=passwordhere node wafflebot.js');
+    return ;
 }
 
-var client = new irc.Client('serverhere', 'wafflebot', config);
+/* Connect to server */
+var client = connection.begin({server, password).then(function () {
+    console.log('Succesfully connected to ' + server + '...');
+}, function (err) {
+    console.log('There was an error connecting to ' + server + ':');
+    console.log(err);
+});
 
-client.addListener('message', function (from, to, message) {
-    response = handleStockResponse(from, to, message);
-    if (response) {
-        client.say(to, response);
-    } else {
-        handleCustomResponse(from, to, message);
-    }
+handle = new MessageHandler(client);
+
+/* Handle incoming messages */
+client.addListener('message', handle.message);
+client.addListener('pm', handle.pm);
+
+client.addListener('error', function(err) {
+    console.log('Error: ' + err);
 });
 
 client.addListener('pm', function (from, message) {
