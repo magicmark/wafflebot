@@ -1,18 +1,25 @@
  "use strict";
 
 var fs           = require('fs');
-var http         = require('http');
+var unirest      = require('unirest');
 var file_actions = require('./file_actions');
 
 
-var send_notification function () {
-  var options = {
-    host: 'www.nodejitsu.com',
-    path: '/',
-    port: '1338',
-    //This is the only line that is new. `headers` is an object with the headers to request
-    headers: {'custom': 'Custom Header Demo works'}
-  };
+var send_notification = function (email, channel, body) {
+
+  unirest.post('https://api.pushbullet.com/v2/pushes')
+  .header('Accept', 'application/json')
+  .header('Access-Token', process.env.WBPBAUTH)
+  .send({
+    email: email,
+    type: 'note',
+    title: 'You were mentioned in ' + channel,
+    body: ''
+  })
+  .end(function (response) {
+    console.log(response.body);
+  });
+
 };
 
 
@@ -48,13 +55,18 @@ WatchList.prototype.subscribe = function (user, email) {
 };
 
 
-WatchList.prototype.check = function (message) {
+WatchList.prototype.check = function (from, channel, message) {
 
-  for user in this.users {
+  var me = this;
+  Object.keys(this.users).forEach(function (user) {
     if (RegExp(user).test(message)) {
-
+      send_notification(
+        me.users[user].email,
+        channel,
+        from + ': ' + message
+      )
     }
-  }
+  });
 
 };
 

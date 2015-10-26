@@ -16,4 +16,5 @@ module.exports = {
   'fairy cake me':         response('Yummy! Here you go! http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2010/7/7/1278515929248/Fairy-cakes-006.jpg', false),
   'jam roly poly me':      response('Yummy! Here you go! http://goodtoknow.media.ipcdigital.co.uk/111/00000811c/e5bb/jam-roly-poly.jpg', false),
   'bangers and mash me':   response('Yummy! Here you go! http://www.roadtripsrus.com/wp-content/uploads/2013/11/Bangers-and-mash.jpg', false),
+  'baby sauce me':         response('Yummy! Here you go! http://importfood.com/media/sagb2401_1l.jpg'),
 };

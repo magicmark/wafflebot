@@ -3,7 +3,7 @@
 var stock_responses = require('./responses');
 var file_actions = require('./file_actions');
 
-function ActionHandler (client) {
+function ActionHandler (client, watchlist) {
   this.client    = client;
   this.watchlist = watchlist;
 }

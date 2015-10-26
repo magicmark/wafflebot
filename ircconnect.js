@@ -1,6 +1,7 @@
  "use strict";
 
 var irc = require('irc');
+var Q   = require('q');
 
 var config = {
   userName: 'WaffleBot',
@@ -8,7 +9,7 @@ var config = {
   port: 6697,
   // channels: ['#wafflebot', '#battleground', '#frontend', '#webcore'],
   channels: ['#battleground'],
-  autoConnect: true,
+  autoConnect: false,
   secure: true,
   sasl: false
 };
@@ -18,4 +19,4 @@ var connect = function (_server, _password) {
   return new irc.Client(_server, 'wafflebot', config);
 };
 
-module.export = connect;
+module.exports = connect;

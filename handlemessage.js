@@ -53,7 +53,7 @@ var handle_message = function (from, message, room) {
 
 
 MessageHandler.prototype.message = function (from, room, message) {
-  this.watchlist.check(message);
+  this.watchlist.check(from, room, message);
   handle_message.call(this, from, message, room);
 };
 
