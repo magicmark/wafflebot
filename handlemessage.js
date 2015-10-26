@@ -28,13 +28,13 @@ var handle_message = function (from, message, room) {
     return ;
   }
 
-  if (command === 'join') {
-    this.actions.join_room(channelToJoin);
+  if (command === 'join' && msg_parts[1]) {
+    this.actions.join_room(from, msg_parts[1]);
     return ;
   }
 
   if (command === 'fight' && msg_parts[1] === 'marley') {
-    this.actions.fight_marley(channelToJoin);
+    this.actions.fight_marley(from, room);
     return ;
   }
 

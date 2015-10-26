@@ -14,10 +14,10 @@ var send_notification = function (email, channel, body) {
     email: email,
     type: 'note',
     title: 'You were mentioned in ' + channel,
-    body: ''
+    body: body,
   })
   .end(function (response) {
-    console.log(response.body);
+    // console.log(response.body);
   });
 
 };
@@ -70,4 +70,4 @@ WatchList.prototype.check = function (from, channel, message) {
 
 };
 
-module.exports = WatchList
+module.exports = WatchList;

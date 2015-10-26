@@ -18,7 +18,7 @@ var room_guard = function (requester, room) {
 
 
 ActionHandler.prototype.join_room = function (requester, channelToJoin) {
-  if (room.charAt(0) !== '#') {
+  if (channelToJoin.charAt(0) !== '#') {
     this.client.say(requester, 'I cannot join ' + channelToJoin);
     return ;
   }
@@ -61,7 +61,7 @@ ActionHandler.prototype.handle_other = function (requester, message, room) {
     if (!room_guard.call(this, requester, room)) return ;
   }
 
-  response = response.replace('{from}', requester);
+  response = response.message.replace('{from}', requester);
 
   if (room) {
     this.client.say(room, response);

@@ -1,3 +1,4 @@
-{
-  "rooms": ["#wafflebot"]
-}
+[
+  "#wafflebot",
+  "#freenode"
+]
