@@ -59,7 +59,7 @@ WatchList.prototype.check = function (from, channel, message) {
 
   var me = this;
   Object.keys(this.users).forEach(function (user) {
-    if (RegExp(user).test(message)) {
+    if (RegExp([^a-z]user[^a-z]).test(message)) {
       send_notification(
         me.users[user].email,
         channel,
