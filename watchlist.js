@@ -26,9 +26,8 @@ var send_notification = function (email, channel, body) {
 
 /* TODO: Investigate whether it's worth doing something like this. Seems like it could be. */
 // var compile_users = function () {
-//   this.user_list = Object.keys(this.users);
+//   this.user_list = Object.keys(this.users).map(...
 //   add regex here somewhere
-// };
 
 function WatchList () {
 
@@ -56,10 +55,10 @@ WatchList.prototype.subscribe = function (user, email) {
 
 
 WatchList.prototype.check = function (from, channel, message) {
-
+  // TODO: factor this regex out into a small testable function
   var me = this;
   Object.keys(this.users).forEach(function (user) {
-    if (RegExp([^a-z]user[^a-z]).test(message)) {
+    if (RegExp('(^| +)' + user, 'ig').test(message)) {
       send_notification(
         me.users[user].email,
         channel,

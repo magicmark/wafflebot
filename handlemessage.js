@@ -11,7 +11,8 @@ function MessageHandler (client) {
 };
 
 /* Private method, lol */
-var handle_message = function (from, message, room) {
+/* Seems like we could use closure or something and do this properly */
+var handle_message = function (from, message, room, prefix) {
   var command, msg_parts;
 
   message   = message.trim().replace(/(\s){2,}/g, ' ').toLowerCase();
@@ -21,14 +22,14 @@ var handle_message = function (from, message, room) {
   // ============================
   // Handle Commands
   // ============================
-  
+
   if (command === 'wafflebot') {
     msg_parts.shift();
-    handle_message.call(this, from, msg_parts.join(' '), room);
+    handle_message.call(this, from, msg_parts.join(' '), room, true);
     return ;
   }
 
-  if (command === 'join' && msg_parts[1]) {
+  if (command === 'join' && msg_parts[1] && prefix) {
     this.actions.join_room(from, msg_parts[1]);
     return ;
   }
@@ -38,7 +39,7 @@ var handle_message = function (from, message, room) {
     return ;
   }
 
-  if (command === 'notify') {
+  if (command === 'notify' && prefix) {
     this.actions.notifications(from, message, room);
     return ;
   }
@@ -54,11 +55,11 @@ var handle_message = function (from, message, room) {
 
 MessageHandler.prototype.message = function (from, room, message) {
   this.watchlist.check(from, room, message);
-  handle_message.call(this, from, message, room);
+  handle_message.call(this, from, message, room, false);
 };
 
 MessageHandler.prototype.pm = function (from, message) {  
-  handle_message.call(this, from, message, null);
+  handle_message.call(this, from, message, null, true);
 };
 
 module.exports = MessageHandler;
