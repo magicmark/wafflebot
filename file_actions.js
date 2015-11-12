@@ -53,14 +53,13 @@ var add_user_watch = function (user, email) {
 
 var add_room = function (room) {
   return readWrite(ROOMS, function (data) {
-    var rooms = data.rooms;
 
     /* Check if we're already in the file */
-    if (rooms.indexOf(room) === -1) {
-      rooms.push(room);
+    if (data.rooms.indexOf(room) === -1) {
+      data.rooms.push(room);
     }
 
-    return rooms;
+    return data;
   });
 };
 
