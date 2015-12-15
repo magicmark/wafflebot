@@ -18,4 +18,5 @@ module.exports = {
   'bangers and mash me':   response('Yummy! Here you go! http://www.roadtripsrus.com/wp-content/uploads/2013/11/Bangers-and-mash.jpg', false),
   'baby sauce me':         response('Yummy! Here you go! http://importfood.com/media/sagb2401_1l.jpg'),
   'hobnob me':             response('Yummy! Here you go! http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/6/12/1244814218926/hobnob-001.jpg', false),
+  'ice cream':             response('🍦'),
 };
