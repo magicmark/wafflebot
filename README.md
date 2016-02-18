@@ -37,5 +37,8 @@ node wafflebot.js
 - Refactor to have a 'message' class rather than pass around room, to, message arguments etc
 - Maybe make rooms.json a hash table? Not a big deal really
 
+## Contributing
+Go for it! Submit a pull request :)
+
 ## License
 ![](http://i.imgur.com/UOkGhYi.gif)
