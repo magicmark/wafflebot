@@ -60,7 +60,7 @@ class ActionHandler {
    */
   fight_marley (requester, room) {
 
-    if (!this.room_guard(requester, room)) return ;
+    if (!this._room_guard(requester, room)) return ;
 
     this.client.action(room, 'Commencing battle...');
 
