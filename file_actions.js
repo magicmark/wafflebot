@@ -1,15 +1,17 @@
-var fs = require('fs');
-var Q  = require('q');
+"use strict"
 
-var WATCH_USERS = 'notification_users.json';
-var ROOMS       = 'rooms.json';
+const fs = require('fs');
+const Q  = require('q');
+
+const WATCH_USERS = 'notification_users.json';
+const ROOMS       = 'rooms.json';
 
 
 var write_to_file = function (file, data) {
 
   var d = Q.defer();
 
-  fs.writeFile(file, JSON.stringify(data, null, 2), function(err) {
+  fs.writeFile(file, JSON.stringify(data, null, 2), (err) => {
     if (err) {
       console.log('There was an error writing to : ' + file);
       console.log(err);
