@@ -10,7 +10,7 @@ An IRC wafflebot.
 Wafflebot did use Pushbullet for sending iOS notifications, but this has now been replaced by emails. If you would like iOS push notifications to be reenabled, let me know!
 
 To subscribe, send wafflebot a private message with your email address:
-```IRC log
+```IRC
 /msg wafflebot notify subscribe markl@yelp.com
 ```
 
