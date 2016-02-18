@@ -7,8 +7,6 @@ var config = {
   userName: 'WaffleBot',
   realName: 'WaffleBot',
   port: 6697,
-  // channels: ['#wafflebot', '#battleground', '#frontend', '#webcore'],
-  channels: ['#battleground'],
   autoConnect: false,
   secure: true,
   sasl: false

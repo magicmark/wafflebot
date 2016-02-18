@@ -1,65 +1,103 @@
  "use strict";
 
-var ActionHandler = require('./actionhandler.js');
-var WatchList     = require('./watchlist.js');
+const ActionHandler = require('./actionhandler.js');
+const WatchList     = require('./watchlist');
 
-function MessageHandler (client) {
-  this.client = client;
-  this.watchlist = new WatchList();
-  // TODO: Look at refactoring this instantiation
-  this.actions = new ActionHandler(client, this.watchlist);
-};
+class MessageHandler {
 
-/* Private method, lol */
-/* Seems like we could use closure or something and do this properly */
-var handle_message = function (from, message, room, prefix) {
-  var command, msg_parts;
+  /**
+   * Constructor for MessageHandler
+   *
+   * @param  {Client} client The Client object created by irc.Client
+   * @param  {Mailer} mailer The Mailer class to send out emails
+   */
+  constructor (client, mailer) {
+    this.client    = client;
+    this.mailer    = mailer;
 
-  message   = message.trim().replace(/(\s){2,}/g, ' ').toLowerCase();
-  msg_parts = message.split(' ');
-  command   = msg_parts[0];
+    this.watchlist = new WatchList();
+    this.actions   = new ActionHandler(client, this.watchlist);
+  };
 
-  // ============================
-  // Handle Commands
-  // ============================
+  /**
+   * Takes a raw message and checks if wafflebot should do stuff about it
+   *
+   * @param   {String}  from    The username of the message author
+   * @param   {String}  message Some text about some stuff
+   * @param   {String}  room    The IRC room the message was sent from
+   *                            (empty string if it was a PM to wafflebot)
+   * @param   {Boolean} prefix  Was the message formally addressed to wafflebot?
+   *                            (eg: 'wafflebot waffle me' vs 'waffle me')
+   *
+   * @private
+   */
+  _handle_message (from, message, room, prefix) {
+    var command, msg_parts;
 
-  if (command === 'wafflebot') {
-    msg_parts.shift();
-    handle_message.call(this, from, msg_parts.join(' '), room, true);
-    return ;
-  }
+    message   = message.trim().replace(/(\s){2,}/g, ' ').toLowerCase();
+    msg_parts = message.split(' ');
+    command   = msg_parts[0];
 
-  if (command === 'join' && msg_parts[1] && prefix) {
-    this.actions.join_room(from, msg_parts[1]);
-    return ;
-  }
+    // ============================
+    // Handle Commands
+    // ============================
 
-  if (command === 'fight' && msg_parts[1] === 'marley') {
-    this.actions.fight_marley(from, room);
-    return ;
-  }
+    if (command === 'wafflebot') {
+      msg_parts.shift();
+      this._handle_message(from, msg_parts.join(' '), room, true);
+      return ;
+    }
 
-  if (command === 'notify' && prefix) {
-    this.actions.notifications(from, message, room);
-    return ;
-  }
+    if (command === 'join' && msg_parts[1] && prefix) {
+      this.actions.join_room(from, msg_parts[1]);
+      return ;
+    }
 
-  // ============================
-  // Handle Other Stuff
-  // ============================
-  
-  this.actions.handle_other(from, message, room);
+    if (command === 'fight' && msg_parts[1] === 'marley') {
+      this.actions.fight_marley(from, room);
+      return ;
+    }
 
-};
+    if (command === 'notify' && prefix) {
+      this.actions.notifications(from, message, room);
+      return ;
+    }
 
+    // ============================
+    // Handle Stock Responses
+    // ============================
+    
+    this.actions.handle_other(from, message, room);
 
-MessageHandler.prototype.message = function (from, room, message) {
-  this.watchlist.check(from, room, message);
-  handle_message.call(this, from, message, room, false);
-};
+  };
 
-MessageHandler.prototype.pm = function (from, message) {  
-  handle_message.call(this, from, message, null, true);
-};
+  /**
+   * Handles IRC messages to a channel
+   *
+   * @param  {String} from    The username of the message author
+   * @param  {String} room    Channel name
+   * @param  {String} message The text of the message
+   */
+  message (from, room, message) {
+    // Check if the message contained the name of a user we're watching
+    let email_address = this.watchlist.check(message);
+    if (email_address) {
+      this.mailer.send(email_address, room, message, from);
+    }
+
+    this._handle_message(from, message, room, false);
+  };
+
+  /**
+   * Handles IRC messages PM'd to wafflebot
+   *
+   * @param  {String} from    The username of the message author
+   * @param  {String} message Channel name
+   */
+  pm (from, message) {  
+    this._handle_message(from, message, null, true);
+  };
+
+}
 
 module.exports = MessageHandler;

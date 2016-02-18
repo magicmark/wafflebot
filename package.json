@@ -5,6 +5,8 @@
   "main": "wafflebot.js",
   "dependencies": {
     "irc": "^0.4.0",
+    "moment": "2.11.2",
+    "nodemailer": "^2.2.0",
     "q": "^1.4.1",
     "unirest": "^0.4.2"
   },

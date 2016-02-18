@@ -1,0 +1,5 @@
+{
+	"mail_transport_string": "smtps://example%40gmail.com:passwordhere@smtp.gmail.com",
+	"irc_server": "irc.example.com",
+	"irc_server_password": "serverpassword"
+}

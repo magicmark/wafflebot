@@ -1,101 +1,134 @@
- "use strict";
+"use strict";
+const stock_responses = require('./responses');
+const file_actions = require('./file_actions');
 
-var stock_responses = require('./responses');
-var file_actions = require('./file_actions');
+class ActionHandler {
 
-function ActionHandler (client, watchlist) {
-  this.client    = client;
-  this.watchlist = watchlist;
-}
-
-var room_guard = function (requester, room) {
-  if (room) return true;
-
-  this.client.say(requester, 'You need to be in a room to do this!');
-  return false;
-};
-
-
-
-ActionHandler.prototype.join_room = function (requester, channelToJoin) {
-  if (channelToJoin.charAt(0) !== '#') {
-    this.client.say(requester, 'I cannot join ' + channelToJoin);
-    return ;
+  constructor (client, watchlist) {
+    this.client    = client;
+    this.watchlist = watchlist;
   }
 
-  /* Join on IRC */
-  this.client.join(channelToJoin);
+  /**
+   * A check to ensure action is being performed in a room
+   *
+   * @param   {String} requester The originating username or #room
+   * @param   {String} room      The channel name (empty string if not in a room)
+   *
+   * @return  {Boolean} Are we in a room?
+   *
+   * @private
+   */
+  _room_guard (requester, room) {
+    if (room) return true;
 
-  /* Make it permanent */
-  var me = this;
-  file_actions.add_room(channelToJoin).then(function () {
-    me.client.say(requester, 'I have joined ' + channelToJoin + '!');
-  }, function () {
-    me.client.say(requester, 'There was a potential problem permanently joining ' + channelToJoin);    
-  });
-
-};
-
-
-ActionHandler.prototype.fight_marley = function (requester, room) {
-
-  if (!room_guard.call(this, requester, room)) return ;
-
-  this.client.action(room, 'Commencing battle...');
-
-  setTimeout(function (me) {
-      me.client.say(room, 'marley i feel the need');
-  }, 1250, this);
-  setTimeout(function (me) {
-      me.client.say(room, 'marley come on and slam');
-  }, 2320, this);
-
-};
-
-
-ActionHandler.prototype.handle_other = function (requester, message, room) {
-  var response = stock_responses[message];
-  if (!response) return ;
-
-  if (response.room_guard) {
-    if (!room_guard.call(this, requester, room)) return ;
+    this.client.say(requester, 'You need to be in a room to do this!');
+    return false;
   }
 
-  response = response.message.replace('{from}', requester);
 
-  if (room) {
-    this.client.say(room, response);
-  } else {
-    this.client.say(requester, response);
-  }
+  /**
+   * Joins an IRC Channel
+   *
+   * @param  {String} requester     The username of the message author
+   * @param  {String} channelToJoin The name of the channel we want to join
+   */
+  join_room (requester, channelToJoin) {
+    if (channelToJoin.charAt(0) !== '#') {
+      this.client.say(requester, 'I cannot join ' + channelToJoin);
+      return ;
+    }
 
-};
+    /* Join room */
+    this.client.join(channelToJoin);
 
-
-ActionHandler.prototype.notifications = function (requester, message, room) {
-
-  // TODO: Consider moving this into watchlist
-
-  // TODO: Set up the reverse of room_guard or refactor or something
-  if (room) {
-    this.client.say(room, requester + ': private message me to set up notifications :)');
-    return ;
-  }
-  
-  var msg_parts = message.split(' ');
-  var email     = msg_parts[2];
-
-  if (msg_parts[1] === 'subscribe' && email) {
-
-    var me = this;
-    this.watchlist.subscribe(requester, email).then(function () {
-      me.client.say(requester, 'Successfully set up notifications to ' + email);
-    }, function () {
-      me.client.say(requester, 'There was a possible error setting up notifications. Please contact markl');
+    /* Make it permanent */
+    file_actions.add_room(channelToJoin).then(() => {
+      this.client.say(requester, 'I have joined ' + channelToJoin + '!');
+    }, () => {
+      this.client.say(requester, 'There was a potential problem permanently joining ' + channelToJoin);    
     });
 
-  } else {
-    this.client.say(requester, 'Invalid command. Usage: notify subscribe myemail@example.com');
+  }
+
+
+  /**
+   * Action to engage in deadly combat with the enemy known as 'marley'
+   *
+   * @param  {String} requester The username of the message author
+   * @param  {String} room      The channel name
+   */
+  fight_marley (requester, room) {
+
+    if (!this.room_guard(requester, room)) return ;
+
+    this.client.action(room, 'Commencing battle...');
+
+    setTimeout(() => {
+        this.client.say(room, 'marley i feel the need');
+    }, 1250);
+    setTimeout(() => {
+        this.client.say(room, 'marley come on and slam');
+    }, 2320);
+
+  }
+
+
+  /**
+   * Handles all other actions (ie the stock responses)
+   *
+   * @param  {String} requester The username of the message author
+   * @param  {String} message   The message text
+   * @param  {String} room      The IRC Channel
+   */
+  handle_other (requester, message, room) {
+    var response = stock_responses[message];
+    if (!response) return ;
+
+    if (response.room_guard) {
+      if (!this._room_guard(requester, room)) return ;
+    }
+
+    response = response.message.replace('{from}', requester);
+
+    if (room) {
+      this.client.say(room, response);
+    } else {
+      this.client.say(requester, response);
+    }
+
+  }
+
+  /**
+   * Action to set up set up ping notifications
+   *
+   * @param  {String} requester The username of the message author
+   * @param  {String} message   The message text
+   * @param  {String} room      The IRC Channel
+   */
+  notifications (requester, message, room) {
+
+    // TODO: Set up the reverse of room_guard or refactor or something
+    if (room) {
+      this.client.say(room, requester + ': private message me to set up notifications :)');
+      return ;
+    }
+    
+    var msg_parts = message.split(' ');
+    var email     = msg_parts[2];
+
+    if (msg_parts[1] === 'subscribe' && email) {
+
+      this.watchlist.subscribe(requester, email).then(() => {
+        this.client.say(requester, 'Successfully set up notifications to ' + email);
+      }, () => { 
+        this.client.say(requester, 'There was a possible error setting up notifications. Please contact markl');
+      });
+
+    } else {
+      this.client.say(requester, 'Invalid command. Usage: notify subscribe myemail@example.com');
+    }
+
   }
 
 };

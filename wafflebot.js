@@ -1,39 +1,42 @@
- "use strict";
+"use strict";
 
 /* Dependencies */
-var MessageHandler = require('./handlemessage.js');
-var connection     = require('./ircconnect.js');
+const MessageHandler = require('./handlemessage.js');
+const Mailer         = require('./mailer.js');
+const connection     = require('./ircconnect.js');
+const file_actions   = require('./file_actions');
+const fs             = require('fs');
 
-/* Initialise connection vars */
-var server, password;
-server   = process.env.WBSERVER;
-password = process.env.WBPASSWORD;
+const config = require('./config.json')
 
-if (!server || !password) {
-    console.log('Pleae provide valid IRC server and password as such:');
-    console.log('$ WBSERVER=serverhere WBPASSWORD=passwordhere node wafflebot.js');
-    return ;
+if (!config.irc_server || !config.irc_server_password || !config.mail_transport_string) {
+  console.log('Please ensure a valid config.json');
+  return ;
 }
 
-/* Connect to server */
-// connection(server, password).then(function (client) {
-//   console.log('Succesfully connected to ' + server + '...');
-//   startServer(client);
-// }, function (err) {
-//   console.log('There was an error connecting to ' + server + ':');
-//   console.log(err);
-// });
-
-var client = connection(server, password);
-var handle = new MessageHandler(client);
+const client = connection(config.irc_server, config.irc_server_password);
+const mailer = new Mailer(config.mail_transport_string);
+const handle = new MessageHandler(client, mailer);
 
 /* Handle incoming messages */
 client.addListener('message', handle.message.bind(handle));
 client.addListener('pm', handle.pm.bind(handle));
 
 client.addListener('error', function(err) {
-  console.log('Error: ' + err);
+  console.log('Error: ' , err);
 });
 
 /* Finally, connect */
 client.connect();
+
+
+// ============================
+// Auto-join rooms
+// ============================
+
+setTimeout(() => {
+  const rooms = require('./rooms.json')
+  rooms.forEach((room) => {
+    client.join(room);
+  });
+}, 10000);

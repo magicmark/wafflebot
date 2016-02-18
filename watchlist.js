@@ -1,72 +1,59 @@
- "use strict";
+"use strict";
 
-var fs           = require('fs');
-var unirest      = require('unirest');
-var file_actions = require('./file_actions');
-
-
-var send_notification = function (email, channel, body) {
-
-  unirest.post('https://api.pushbullet.com/v2/pushes')
-  .header('Accept', 'application/json')
-  .header('Access-Token', process.env.WBPBAUTH)
-  .send({
-    email: email,
-    type: 'note',
-    title: 'You were mentioned in ' + channel,
-    body: body,
-  })
-  .end(function (response) {
-    // console.log(response.body);
-  });
-
-};
+const fs           = require('fs');
+const file_actions = require('./file_actions');
 
 
+class WatchList {
 
-/* TODO: Investigate whether it's worth doing something like this. Seems like it could be. */
-// var compile_users = function () {
-//   this.user_list = Object.keys(this.users).map(...
-//   add regex here somewhere
+  /**
+   * Creates a WatchList, to check all incoming messages to see if we need to notify anyone
+   */
+  constructor () {
+    fs.readFile(file_actions.WATCH_USERS, 'utf8', (err, data) => {
+      if (err) {
+        console.log('There was an error reading: ' + file_actions.WATCH_USERS);
+        console.log(err);
+        throw err;
+        return ;
+      }
 
-function WatchList () {
+      this.users = JSON.parse(data);
+    });
+  }
 
-  var me = this;
-  fs.readFile(file_actions.WATCH_USERS, 'utf8', function (err, data) {
-    if (err) {
-      console.log('There was an error reading: ' + file_actions.WATCH_USERS);
-      console.log(err);
-      throw err;
-      return ;
+  /**
+   * Creates a subscription in WatchList
+   *
+   * @param  {String} user  Username to watch for
+   * @param  {String} email Email address to send to
+   *
+   * @return {Promise} Promise containing the result of permanently storing the subscription
+   */
+  subscribe (user, email) {
+    this.users[user] = {
+      email: email
+    };
+
+    return file_actions.add_user_watch(user, email);
+  }
+
+
+  /**
+   * Method to check a message for all users that we need to listen for
+   * @param  {String} message The message text
+   *
+   * @return {String|null} If the message matched someone's username, return their email address.
+   */
+  check (message) {
+    // TODO: factor this regex out into a small testable function
+    for (let user in this.users) {
+      if (RegExp('(^| +)' + user, 'ig').test(message)) {
+        return this.users[user].email;
+      }
     }
-
-    me.users = JSON.parse(data);
-  });
+  }
 
 }
-
-WatchList.prototype.subscribe = function (user, email) {
-  this.users[user] = {
-    email: email
-  };
-
-  return file_actions.add_user_watch(user, email);
-};
-
-
-WatchList.prototype.check = function (from, channel, message) {
-  // TODO: factor this regex out into a small testable function
-  var me = this;
-  Object.keys(this.users).forEach(function (user) {
-    if (RegExp('(^| +)' + user, 'ig').test(message)) {
-      send_notification(
-        me.users[user].email,
-        channel,
-        from + ': ' + message
-      )
-    }
-  });
-
-};
 
 module.exports = WatchList;
