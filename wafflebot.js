@@ -19,7 +19,7 @@ const mailer = new Mailer(config.mail_transport_string);
 const handle = new MessageHandler(client, mailer);
 
 /* Handle incoming messages */
-client.addListener('message', handle.message.bind(handle));
+client.addListener('message#', handle.message.bind(handle));
 client.addListener('pm', handle.pm.bind(handle));
 
 client.addListener('error', function(err) {
@@ -34,9 +34,9 @@ client.connect();
 // Auto-join rooms
 // ============================
 
-setTimeout(() => {
+client.addListener('registered', (err) => {
   const rooms = require('./rooms.json')
   rooms.forEach((room) => {
     client.join(room);
   });
-}, 10000);
+});

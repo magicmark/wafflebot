@@ -89,13 +89,15 @@ class ActionHandler {
       if (!this._room_guard(requester, room)) return ;
     }
 
-    response = response.message.replace('{from}', requester);
+    let responseMessage = response.message.replace('{from}', requester);
 
-    if (room) {
-      this.client.say(room, response);
-    } else {
-      this.client.say(requester, response);
-    }
+    setTimeout(() => {
+      if (room) {
+        this.client.say(room, responseMessage);
+      } else {
+        this.client.say(requester, responseMessage);
+      }
+    }, response.delay);
 
   }
 

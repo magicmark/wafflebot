@@ -79,6 +79,7 @@ class MessageHandler {
    * @param  {String} message The text of the message
    */
   message (from, room, message) {
+    console.log('getting message:', message);
     // Check if the message contained the name of a user we're watching
     let email_address = this.watchlist.check(message);
     if (email_address) {

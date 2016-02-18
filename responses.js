@@ -1,9 +1,10 @@
  "use strict";
 var waffle = require('./waffle.js');
 
-var response = function (message, room_guard) {
+var response = function (message, room_guard, delay) {
   return {
     message: message,
+    delay: delay || 0,
     room_guard: room_guard,
   }
 };
@@ -12,7 +13,7 @@ const wafflelore = response(`\
 Established in 2015, Wafflebot is Yelp's foremost and best loved wafflebot.
 He quickly rose to popularity by delighting users with his zany waffle-related antics and amusing Britishisms.
 Wafflebot's true origins are shrouded in mystery, however many have claimed that it is the work of {from}.
-For more information, please contact your team's Wafflebot deputy.`, true)
+For more information, please contact your team's Wafflebot deputy.`, true, 3000)
 
 // Be sure not to add anything too general - wafflebot strips the "wafflebot" prefix in a message
 module.exports = {
