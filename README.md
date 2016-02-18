@@ -1,5 +1,6 @@
 # wafflebot
 An IRC wafflebot.
+
 ![](http://i.imgur.com/YMLz9gi.png)
 
 ## Fun Features
