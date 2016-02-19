@@ -17,9 +17,8 @@ To subscribe, send wafflebot a private message with your email address:
 ```
 
 Protip: You can enable browser/mobile notifications from wafflebot:
-https://support.google.com/mail/answer/1075549?hl=en
-
-http://www.howtogeek.com/171178/how-to-get-notifications-for-only-the-emails-you-care-about-with-gmail-on-android/
+- https://support.google.com/mail/answer/1075549?hl=en
+- http://www.howtogeek.com/171178/how-to-get-notifications-for-only-the-emails-you-care-about-with-gmail-on-android/
 
 ## How to run:
 So you want to run your own Wafflebot? Good decision!
