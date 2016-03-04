@@ -85,6 +85,8 @@ class MessageHandler {
       this.mailer.send(email_address, room, message, from);
     }
 
+    // TODO: Investigate why message might not be a string from time to time
+    message = message || '';
     this._handle_message(from, message, room, false);
   };
 
