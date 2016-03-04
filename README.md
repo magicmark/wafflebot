@@ -8,6 +8,11 @@ An IRC wafflebot.
 - Wafflebot will send you an email if you get pinged in a channel
 - *Far* too many to describe, you'll have to explore!
 
+## Have Wafflebot join a room
+```IRC
+/msg wafflebot join #myawesomechannel
+```
+
 ## Subscribe to Wafflebot for notifications
 Wafflebot did use Pushbullet for sending iOS notifications, but this has now been replaced by emails. If you would like iOS push notifications to be reenabled, let me know!
 
