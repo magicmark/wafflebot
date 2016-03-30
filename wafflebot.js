@@ -3,6 +3,7 @@
 /* Dependencies */
 const MessageHandler = require('./handlemessage.js');
 const Mailer         = require('./mailer.js');
+const MemeMaker      = require('./meme.js');
 const connection     = require('./ircconnect.js');
 const file_actions   = require('./file_actions');
 const fs             = require('fs');
@@ -14,9 +15,10 @@ if (!config.irc_server || !config.irc_server_password || !config.mail_transport_
   return ;
 }
 
-const client = connection(config.irc_server, config.irc_server_password);
+const client = connection(config.irc_server, config.irc_server_password, config.botname);
 const mailer = new Mailer(config.mail_transport_string);
-const handle = new MessageHandler(client, mailer);
+const meme   = new MemeMaker(config.imgflip);
+const handle = new MessageHandler(client, mailer, meme);
 
 /* Handle incoming messages */
 client.addListener('message#', handle.message.bind(handle));

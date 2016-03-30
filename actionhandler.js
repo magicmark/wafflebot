@@ -4,9 +4,10 @@ const file_actions = require('./file_actions');
 
 class ActionHandler {
 
-  constructor (client, watchlist) {
+  constructor (client, watchlist, meme) {
     this.client    = client;
     this.watchlist = watchlist;
+    this.meme      = meme;
   }
 
   /**
@@ -130,6 +131,24 @@ class ActionHandler {
     } else {
       this.client.say(requester, 'Invalid command. Usage: notify subscribe myemail@example.com');
     }
+
+  }
+
+  /**
+   * Makes a meme
+   *
+   * @param  {String} requester The username of the message author
+   * @param  {String} message   The message text
+   * @param  {String} room      The IRC Channel
+   */
+  make_meme (requester, message, room) {
+    console.log(message);
+    // TODO: parse message here maybe
+    this.meme.create(message).then((result) => {
+      this.client.say(room, `${requester}: ${result}`);
+    }, (error) => {
+      console.log('oh dear' + error);
+    });
 
   }
 

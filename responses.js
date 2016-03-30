@@ -29,7 +29,6 @@ module.exports = {
   'hobnob me':                  response('Yummy! Here you go! http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/6/12/1244814218926/hobnob-001.jpg', false),
   'ice cream':                  response('🍦'),
   'ice cream?':                 response('🍦'),
-  'paasta':                     response('🍝'),
   'whois wafflebot':            wafflelore,
   'who is wafflebot':           wafflelore,
   'marley whois wafflebot':     wafflelore,

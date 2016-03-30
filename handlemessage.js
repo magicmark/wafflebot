@@ -10,13 +10,14 @@ class MessageHandler {
    *
    * @param  {Client} client The Client object created by irc.Client
    * @param  {Mailer} mailer The Mailer class to send out emails
+   * @param  {Meme}   meme Meme class used to generate memes
    */
-  constructor (client, mailer) {
+  constructor (client, mailer, meme) {
     this.client    = client;
     this.mailer    = mailer;
 
     this.watchlist = new WatchList();
-    this.actions   = new ActionHandler(client, this.watchlist);
+    this.actions   = new ActionHandler(client, this.watchlist, meme);
   };
 
   /**
@@ -60,6 +61,11 @@ class MessageHandler {
 
     if (command === 'notify' && prefix) {
       this.actions.notifications(from, message, room);
+      return ;
+    }
+
+    if (command === 'meme' && msg_parts[1] === 'me') {
+      this.actions.make_meme(from, message, room);
       return ;
     }
 
