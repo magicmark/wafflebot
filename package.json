@@ -28,6 +28,7 @@
     "sinon": "^1.17.4"
   },
   "scripts": {
+    "start": "bin/wafflebot",
     "test": "NODE_PATH=. node_modules/.bin/mocha --require babel-core/register tests/**.js tests/**/*.js",
     "test:watch": "NODE_PATH=. node_modules/.bin/mocha --require babel-core/register -w tests/**.js tests/**/*.js",
     "coverage": "NODE_PATH=. ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- tests/**.js tests/**/*.js --compilers js:babel-register",

@@ -5,6 +5,10 @@ all: test
 test: node_modules
 	npm test
 
+.PHONY: start
+start: build
+	npm start
+
 build: node_modules clean
 	node_modules/.bin/babel -d build wafflebot --no-comments
 	cp wafflebot/*.json build/

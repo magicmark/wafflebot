@@ -60,7 +60,7 @@ export default class Wafflebot {
 
         if (this.commander.waffle) {
             console.log(WAFFLE);
-            return;
+            this.process.exit(0);
         }
 
         if (!this.commander.logLevel) {
@@ -69,7 +69,7 @@ export default class Wafflebot {
 
         this.logger = this.log4js.getLogger('Wafflebot');
         this.logger.setLevel(commander.logLevel);
-        this.logger.info('Initialising Wafflebot!');
+        this.logger.info('Initialising Wafflebot...');
 
         this.configFilesLoader = new this.ConfigFilesLoader({
             configDirectory: commander.configDir,
@@ -137,6 +137,8 @@ export default class Wafflebot {
 
         // Auto-join rooms
         this.client.addListener('registered', (err) => {
+            this.logger.info(`Wafflebot connected to IRC`);
+
             this.configFilesLoader.getFileJson(JSONFiles.ROOMS).then(roomsJson => {
                 roomsJson.forEach(room => {
                     this.logger.debug(`Auto joining ${room}`);
