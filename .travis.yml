@@ -3,4 +3,4 @@ node_js:
     - 6
     - 5
 script:
-    - codecov
+    - make coverage

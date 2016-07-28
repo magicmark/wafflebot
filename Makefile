@@ -16,6 +16,11 @@ build: node_modules clean
 node_modules:
 	npm install
 
+.PHONY: coverage
+coverage:
+	npm run coverage
+	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
 .PHONY: eslint
 eslint:
 	node_modules/.bin/eslint .
