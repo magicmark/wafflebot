@@ -9,15 +9,14 @@ test: node_modules
 start: build
 	npm start
 
-build: node_modules clean
+build: clean node_modules
 	node_modules/.bin/babel -d build wafflebot --no-comments
 	cp wafflebot/*.json build/
 
 node_modules:
 	npm install
 
-.PHONY: coverage
-coverage:
+coverage: clean node_modules
 	npm run coverage
 	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
