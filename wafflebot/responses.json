@@ -1,0 +1,80 @@
+[
+    {
+        "match": "i would like a waffle",
+        "body": "{author} would rather like a waffle.",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "give me a waffle",
+        "body": "{author} would rather like a waffle.",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "waffle me",
+        "body": "{waffle}",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "whois wafflebot",
+        "body": "{waffleHistory}",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "who is wafflebot",
+        "body": "{waffleHistory}",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "cheese toastie me",
+        "body": "Yummy! Here you go! https://upload.wikimedia.org/wikipedia/commons/6/6d/Toastie-cut-and-seal.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "chip butty me",
+        "body": "Yummy! Here you go! http://www.fnstatic.co.uk/images/content/slide/an-ode-to-the-chip-butty_1.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "fairy cake me",
+        "body": "Yummy! Here you go! http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2010/7/7/1278515929248/Fairy-cakes-006.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "jam roly poly me",
+        "body": "Yummy! Here you go! http://goodtoknow.media.ipcdigital.co.uk/111/00000811c/e5bb/jam-roly-poly.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "bangers and mash me",
+        "body": "Yummy! Here you go! http://www.roadtripsrus.com/wp-content/uploads/2013/11/Bangers-and-mash.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "baby sauce me",
+        "body": "Yummy! Here you go! http://importfood.com/media/sagb2401_1l.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "hobnob me",
+        "body": "Yummy! Here you go! http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/6/12/1244814218926/hobnob-001.jpg",
+        "roomGuard": false,
+        "delay": 0
+    },
+    {
+        "match": "ice cream",
+        "body": "🍦",
+        "roomGuard": false,
+        "delay": 0
+    }
+]

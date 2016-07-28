@@ -1,0 +1,12 @@
+{
+    "botname": "wafflebot",
+    "irc": {
+      "server": "irc.example.com",
+      "password": "serverpassword"
+    },
+    "imgflip": {
+        "username": "usernamehere",
+        "password": "passwordhere"
+    },
+    "mail_transport_string": "smtps://example%40gmail.com:passwordhere@smtp.gmail.com"
+}
