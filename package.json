@@ -11,7 +11,7 @@
     "log4js": "^0.6.37",
     "moment": "^2.11.2",
     "nodemailer": "^2.5.0",
-    "request-prcomise": "^3.0.0",
+    "request-promise": "^3.0.0",
     "unirest": "^0.4.2"
   },
   "devDependencies": {
