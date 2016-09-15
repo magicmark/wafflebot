@@ -1,10 +1,9 @@
-import Command from './command.js';
-import Message from './message.js';
-
-import Mailer from './mailer.js';
-import ActionHandler from './action_handler.js';
-
 import { LentilBase, LentilDep } from 'lentildi';
+
+import ActionHandler from './action_handler.js';
+import Command from './command.js';
+import Mailer from './mailer.js';
+import Message from './message.js';
 
 export default class MessageHandler extends LentilBase {
 

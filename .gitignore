@@ -1,17 +1,12 @@
-node_modules
-build
-coverage
-npm-debug.log
-.swp
-
-# OS X stuff
 .DS_Store
-.AppleDouble
-.LSOverride
-config.json
-
-# Icon must end with two \r
-Icon
-
-# Thumbnails
 ._*
+.nyc_output
+.swp
+build
+config.json
+coverage
+dist
+jsdoc
+node_modules
+npm-debug.log
+venv

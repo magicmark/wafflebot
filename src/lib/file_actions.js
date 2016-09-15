@@ -1,8 +1,8 @@
 'use strict';
 
-import Promise from 'bluebird';
 import fs from 'fs';
 import path from 'path';
+import Promise from 'bluebird';
 
 // import { JSONFiles } from './lib/config_files.js';
 

@@ -1,8 +1,7 @@
 import { LentilBase, LentilDep } from 'lentildi';
 
-import ConfigFilesLoader, { JSONFiles } from './config_files.js';
 import Mailer from './mailer.js';
-
+import ConfigFilesLoader, { JSONFiles } from './config_files.js';
 
 /**
  * WatchList, to check all incoming messages to see if we need to notify anyone.
