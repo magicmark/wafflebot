@@ -8,7 +8,7 @@ import {
     AuthStub,
 } from 'testing/stub_factories.js';
 
-import Meme from 'wafflebot/lib/meme.js';
+import Meme from 'src/lib/meme.js';
 
 describe('Meme', function () {
     let meme;
@@ -20,10 +20,9 @@ describe('Meme', function () {
         authStub = AuthStub();
         requestStub = {};
 
-        meme = new Meme({
-            auth: authStub,
+        meme = new Meme(authStub, {
             logger: LoggerStub(),
-            _request: requestStub,
+            request: requestStub,
         });
         sandbox = sinon.sandbox.create();
     });

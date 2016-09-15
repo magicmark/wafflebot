@@ -1,6 +1,12 @@
 export const LoggerStub = () => ({
     info: () => {},
     error: () => {},
+    debug: () => {},
+    warn: () => {},
+});
+
+export const fsStub = () => ({
+    readFileAsync: () => {},
 });
 
 export const AuthStub = () => ({

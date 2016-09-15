@@ -7,8 +7,8 @@ module.exports = {
         "es6": true,
     },
     "rules": {
-        "indent": ["error", 4],
         "comma-dangle": ["error", "always"],
+        "indent": ["error", 4],
         // Allow private identifiers
         "no-underscore-dangle": 0,
     }

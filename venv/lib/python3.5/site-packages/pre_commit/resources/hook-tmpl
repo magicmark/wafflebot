@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# This is a randomish md5 to identify this script
+# 138fd403232d2ddd5efb44317e38bf03
+
+pushd `dirname $0` > /dev/null
+HERE=`pwd`
+popd > /dev/null
+
+retv=0
+args=""
+
+ENV_PYTHON='{sys_executable}'
+
+which pre-commit >& /dev/null
+WHICH_RETV=$?
+"$ENV_PYTHON" -c 'import pre_commit.main' >& /dev/null
+ENV_PYTHON_RETV=$?
+python -c 'import pre_commit.main' >& /dev/null
+PYTHON_RETV=$?
+
+
+if ((
+        (WHICH_RETV != 0) &&
+        (ENV_PYTHON_RETV != 0) &&
+        (PYTHON_RETV != 0)
+)); then
+    echo '`{hook_type}` not found.  Did you forget to activate your virtualenv?'
+    exit 1
+fi
+
+
+# Run the legacy pre-commit if it exists
+if [ -x "$HERE"/{hook_type}.legacy ]; then
+    "$HERE"/{hook_type}.legacy
+    if [ $? -ne 0 ]; then
+        retv=1
+    fi
+fi
+
+{pre_push}
+
+# Run pre-commit
+if ((WHICH_RETV == 0)); then
+    pre-commit $args
+    PRE_COMMIT_RETV=$?
+elif ((ENV_PYTHON_RETV == 0)); then
+    "$ENV_PYTHON" -m pre_commit.main $args
+    PRE_COMMIT_RETV=$?
+else
+    python -m pre_commit.main $args
+    PRE_COMMIT_RETV=$?
+fi
+
+if ((PRE_COMMIT_RETV != 0)); then
+    retv=1
+fi
+
+exit $retv

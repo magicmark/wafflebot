@@ -1,0 +1,32 @@
+Metadata-Version: 2.0
+Name: pre-commit
+Version: 0.8.2
+Summary: A framework for managing and maintaining multi-language pre-commit hooks.
+Home-page: https://github.com/pre-commit/pre-commit
+Author: Anthony Sottile
+Author-email: asottile@umich.edu
+License: UNKNOWN
+Platform: linux
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Dist: aspy.yaml
+Requires-Dist: cached-property
+Requires-Dist: jsonschema
+Requires-Dist: nodeenv (>=0.11.1)
+Requires-Dist: pyterminalsize
+Requires-Dist: pyyaml
+Requires-Dist: virtualenv
+Requires-Dist: argparse; python_version=="2.6"
+Requires-Dist: ordereddict; python_version=="2.6"
+
+UNKNOWN
+
+

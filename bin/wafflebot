@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-var Wafflebot = require('./../build/wafflebot.js').default;
+var Wafflebot = require('./../dist/wafflebot.js').default;
 
 var wafflebot = new Wafflebot();
 wafflebot.start();

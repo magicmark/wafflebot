@@ -3,4 +3,5 @@ node_js:
     - 6
     - 5
 script:
-    - make coverage
+    - make coveralls
+    - make eslint

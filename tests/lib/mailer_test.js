@@ -2,7 +2,7 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Mailer from 'wafflebot/lib/mailer.js';
+import Mailer from 'src/lib/mailer.js';
 import Promise from 'bluebird';
 import { MessageStub, LoggerStub } from 'testing/stub_factories.js';
 
@@ -18,11 +18,9 @@ describe('Mailer', function () {
         transporterFactoryStub = sandbox.stub();
         loggerStub = LoggerStub();
 
-        mailer = new Mailer({
-            mail_transport_string: 'dummyMailString',
+        mailer = new Mailer('dummyMailString', {
             logger: loggerStub,
-            _nodemailer: { createTransport: transporterFactoryStub },
-            _moment: {},
+            nodemailer: { createTransport: transporterFactoryStub },
         });
     });
 

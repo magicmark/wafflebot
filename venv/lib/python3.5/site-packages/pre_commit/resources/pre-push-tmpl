@@ -1,0 +1,20 @@
+z40=0000000000000000000000000000000000000000
+while read local_ref local_sha remote_ref remote_sha
+do
+    if [ "$local_sha" != $z40 ]; then
+        if [ "$remote_sha" = $z40 ];
+        then
+            args="run --all-files"
+        else
+            args="run --origin $local_sha --source $remote_sha"
+        fi
+    fi
+done
+
+if [ "$args" != "" ]; then
+    args="$args --hook-stage push"
+else
+    # If args is empty, then an attempt to push on an empty
+    # changeset is being made. In this case, just exit cleanly
+    exit 0
+fi

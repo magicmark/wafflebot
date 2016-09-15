@@ -1,29 +1,45 @@
-.PHONY: all
 all: test
 
-.PHONY: test
-test: node_modules
-	npm test
+venv: Makefile requirements-dev.txt
+	rm -rf venv
+	virtualenv venv --python=python3
+	venv/bin/pip install -r requirements-dev.txt
+	venv/bin/pre-commit install -f --install-hooks
 
-.PHONY: start
-start: build
+.PHONY: test
+test: venv build
+	# Run unit tests + coverage
+	npm test
+	# Run pre-commit hooks
+	venv/bin/pre-commit run --all-files
+
+start: dist
 	npm start
 
-build: clean node_modules
-	node_modules/.bin/babel -d build wafflebot --no-comments
-	cp wafflebot/*.json build/
+build: node_modules
+	./node_modules/.bin/babel -d dist src --no-comments
+	cp src/*.json dist/
 
 node_modules:
 	npm install
 
-coverage: clean node_modules
-	npm run coverage
+coveralls: coverage node_modules
 	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
-.PHONY: eslint
-eslint:
+.PHONY: jsdoc
+jsdoc: node_modules
+	./node_modules/.bin/jsdoc LentilDI/lib/lentil.js -c .jsdoc.json -r -d jsdoc
+
+eslint: node_modules
 	node_modules/.bin/eslint .
 
-.PHONY: clean
+eslint-fix: node_modules
+	node_modules/.bin/eslint --fix .
+
 clean:
-	rm -rf build
+	rm -rf dist
+	rm -rf coverage
+	rm -rf .nyc_output
+	rm -rf jsdoc
+	rm -rf node_modules
+	rm -rf venv

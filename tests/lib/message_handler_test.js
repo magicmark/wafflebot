@@ -2,8 +2,8 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Message from 'wafflebot/lib/message.js';
-import MessageHandler from 'wafflebot/lib/message_handler.js';
+import Message from 'src/lib/message.js';
+import MessageHandler from 'src/lib/message_handler.js';
 import Promise from 'bluebird';
 import {
     ActionHandlerStub,

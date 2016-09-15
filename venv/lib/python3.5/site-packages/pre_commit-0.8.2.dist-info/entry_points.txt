@@ -1,0 +1,5 @@
+[console_scripts]
+pre-commit = pre_commit.main:main
+pre-commit-validate-config = pre_commit.clientlib.validate_config:run
+pre-commit-validate-manifest = pre_commit.clientlib.validate_manifest:run
+

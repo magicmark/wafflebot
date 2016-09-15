@@ -3,8 +3,8 @@ import sinon from 'sinon';
 import chai from 'chai';
 import Promise from 'bluebird';
 
-import Message from 'wafflebot/lib/message.js';
-import Command from 'wafflebot/lib/command.js';
+import Message from 'src/lib/message.js';
+import Command from 'src/lib/command.js';
 
 describe('Message', function () {
     let message;
@@ -23,7 +23,7 @@ describe('Message', function () {
         sandbox.restore();
     });
 
-    // TODO(magicmark): fix and remove
+    // TODO(magicmark): fix underlying problem and remove
     it('should handle empty body', function () {
         message = new Message({
             body: null,
@@ -34,9 +34,19 @@ describe('Message', function () {
         chai.assert.equal(message._body, '');
     });
 
+    it('should set private message', function () {
+        message = new Message({
+            body: 'dummy body',
+            author: 'dummy author',
+            channel: null,
+        });
+
+        chai.assert.isTrue(message.isPrivateMessage);
+    });
+
     it('should set channel', function () {
         chai.assert.equal(message.channel, 'dummy channel');
-        chai.assert.equal(message.isPrivateMessage, false);
+        chai.assert.isFalse(message.isPrivateMessage);
     });
 
     describe('#body', function () {
