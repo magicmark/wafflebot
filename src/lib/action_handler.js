@@ -69,6 +69,10 @@ export default class ActionHandler extends LentilBase {
      * @param {string} channelToJoin - The name of the channel we want to join
      */
     joinRoom(message, channelToJoin) {
+        if (!message.isPrivateMessage) {
+            return Promise.reject();
+        }
+
         if (channelToJoin.charAt(0) !== '#') {
             this.client.say(message.author,
                 `I cannot join ${channelToJoin}! (Did you mean #${channelToJoin}?)`

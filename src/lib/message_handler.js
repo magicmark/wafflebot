@@ -34,11 +34,11 @@ export default class MessageHandler extends LentilBase {
                 this.actions.notifications(message);
                 return;
             }
+        }
 
-            if (message.command === Command.JOIN && message.parts[1]) {
-                this.actions.joinRoom(message);
-                return;
-            }
+        if (message.command === Command.JOIN && message.parts[1]) {
+            this.actions.joinRoom(message, message.parts[1]);
+            return;
         }
 
         if (message.command === Command.FIGHT && message.parts[1] === 'marley') {
