@@ -46,7 +46,7 @@ describe('Message Handler', function () {
             messageHandler.actions.joinRoom = sandbox.stub();
 
             messageHandler._handleMessage(dummyMessage);
-            chai.assert(messageHandler.actions.joinRoom.calledWith(dummyMessage));
+            chai.assert(messageHandler.actions.joinRoom.calledWith(dummyMessage, '#whatever'));
         });
 
         it('should handle fight', function () {

@@ -59,6 +59,7 @@ describe('Action Handler', function () {
 
     describe('#joinRoom', function () {
         beforeEach(function () {
+            dummyMessage.isPrivateMessage = sandbox.stub().returns(true);
             actionHandler.client.join = sandbox.stub();
             actionHandler.configFilesLoader.getFileJson = sandbox.stub().returns(
                 Promise.resolve([])
