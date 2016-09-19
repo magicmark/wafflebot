@@ -1,9 +1,9 @@
 {
   "name": "wafflebot",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "An IRC Wafflebot",
   "bin": {
-    "wafflebot": "dist/bin/wafflebot"
+    "wafflebot": "bin/wafflebot"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
@@ -36,7 +36,7 @@
   },
   "scripts": {
     "prepublish": "make build",
-    "start": "bin/wafflebot",
+    "start": "wafflebot",
     "test": "NODE_PATH=. nyc mocha -C --require babel-core/register tests/**.js tests/**/*.js"
   },
   "repository": {
