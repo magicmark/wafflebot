@@ -1,14 +1,13 @@
 import 'mocha';
-import sinon from 'sinon';
-import chai from 'chai';
-import Promise from 'bluebird';
 
+import chai from 'chai';
+import sinon from 'sinon';
+import Meme from '../../src/lib/meme.js';
+import Promise from 'bluebird';
 import {
     LoggerStub,
     AuthStub,
-} from 'testing/stub_factories.js';
-
-import Meme from 'src/lib/meme.js';
+} from '../../testing/stub_factories.js';
 
 describe('Meme', function () {
     let meme;

@@ -2,12 +2,11 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Mailer from 'src/lib/mailer.js';
+import Mailer from '../../src/lib/mailer.js';
 import Promise from 'bluebird';
-import { MessageStub, LoggerStub } from 'testing/stub_factories.js';
+import { MessageStub, LoggerStub, } from '../../testing/stub_factories.js';
 
 describe('Mailer', function () {
-
     let sandbox;
     let mailer;
     let loggerStub;
@@ -20,7 +19,7 @@ describe('Mailer', function () {
 
         mailer = new Mailer('dummyMailString', {
             logger: loggerStub,
-            nodemailer: { createTransport: transporterFactoryStub },
+            nodemailer: { createTransport: transporterFactoryStub, },
         });
     });
 
@@ -33,11 +32,10 @@ describe('Mailer', function () {
     });
 
     describe('#send', function () {
-
         beforeEach(function () {
             mailer.transporter = {};
             mailer.moment = sandbox.stub().returns({
-                format: sandbox.stub().returns('dummyTime')
+                format: sandbox.stub().returns('dummyTime'),
             });
         });
 
@@ -60,5 +58,5 @@ describe('Mailer', function () {
 
             chai.assert(loggerStub.error.calledWith('derp'));
         });
-    })
+    });
 });

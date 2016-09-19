@@ -1,31 +1,32 @@
 import Promise from 'bluebird';
-import ConfigFilesLoader, { JSONFiles } from './config_files.js';
+import { LentilBase, LentilDep, } from 'lentildi';
+
 import Meme from './meme.js';
 import Responses from './responses.js';
-
-import { LentilBase, LentilDep } from 'lentildi';
+import WatchList from './watchlist.js';
+import ConfigFilesLoader, { JSONFiles, } from './config_files.js';
 
 export default class ActionHandler extends LentilBase {
 
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             configFilesLoader: ConfigFilesLoader,
             client: LentilDep.Provided('client'),
             logger: LentilDep.Provided('logger'),
-            watchlist: {},
+            watchlist: WatchList,
             meme: Meme,
             responses: Responses,
-        }
+        };
     }
 
     /**
      * A check to ensure action is being performed in a room if specified
      *
      * TODO: Fix this confusing logic
-     * 
+     *
      * @param {Message} message - Message instance
      * @param {Response=} response - Message response instance. (Optional)
      *
@@ -34,7 +35,6 @@ export default class ActionHandler extends LentilBase {
      */
     _checkRoomGuard(message, response) {
         if (message.isPrivateMessage && (!response || (response && response.roomGuard))) {
-            this.client.say(message.author, 'You need to be in a room to do this!');
             return false;
         }
 
@@ -70,8 +70,10 @@ export default class ActionHandler extends LentilBase {
      */
     joinRoom(message, channelToJoin) {
         if (channelToJoin.charAt(0) !== '#') {
-            this.client.say(message.author, `I cannot join ${channelToJoin}! (Did you mean #${channelToJoin}?)`);
-            return;
+            this.client.say(message.author,
+                `I cannot join ${channelToJoin}! (Did you mean #${channelToJoin}?)`
+            );
+            return Promise.reject('invalid room');
         }
 
         // Join room
@@ -79,18 +81,22 @@ export default class ActionHandler extends LentilBase {
         this.logger.info(`Joined room ${channelToJoin}`);
 
         // Make it permanent
-        this.configFilesLoader.getFileJson(JSONFiles.ROOMS)
+        return this.configFilesLoader.getFileJson(JSONFiles.ROOMS)
             .then(roomsJson => {
                 if (roomsJson.indexOf(channelToJoin) === -1) {
                     roomsJson.push(channelToJoin);
                 }
 
                 return this.configFilesLoader.writeFileJson(JSONFiles.ROOMS, roomsJson);
-            }).then(() => {
+            })
+            .then(() => {
                 this.client.say(message.author, `I have joined ${channelToJoin}!`);
                 this.logger.debug(`Saved room ${channelToJoin} to file`);
-            }).catch(err => {
-                this.client.say(message.author, `There was a potential problem permanently joining ${channelToJoin}`);
+            })
+            .catch(err => {
+                this.client.say(message.author,
+                    `There was a potential problem permanently joining ${channelToJoin}`
+                );
                 this.logger.error(`Error joining room ${channelToJoin} - ${err}`);
             });
     }
@@ -103,14 +109,15 @@ export default class ActionHandler extends LentilBase {
      * @return {Promise} Promise containing the result of the action
      */
     fightMarley(message) {
-        // console.log TODO disallow this in eslint (one line if body)
-        if (!this._checkRoomGuard(message)) return false;
+        if (!this._checkRoomGuard(message)) return Promise.reject();
 
         this.client.action(message.channel, 'Commencing battle...');
 
         return Promise.delay(1250).then(() => {
             this.client.say(message.channel, 'marley i feel the need');
-        }).delay(2500).then(() => {
+        })
+        .delay(2500)
+        .then(() => {
             this.client.say(message.channel, 'marley come on and slam');
         });
     }
@@ -165,11 +172,29 @@ export default class ActionHandler extends LentilBase {
             return this.watchlist.subscribe(message.author, email).then(() => {
                 this.client.say(message.author, `Successfully set up notifications to ${email}!`);
             }).catch(error => {
-                this.client.say(message.author, 'There was a possible error setting up notifications. Please contact markl');
+                this.client.say(message.author,
+                    `There was an error setting up notifications:\n${error}.`
+                );
             });
         }
 
-        this.client.say(message.author, 'Invalid command. Usage: notify subscribe myemail@example.com');
+        if (message.parts[1] === 'unsubscribe') {
+            return this.watchlist.unsubscribe(message.author).then(() => {
+                this.client.say(message.author,
+                    'Successfully unsubscribed from notifications.'
+                );
+            }).catch(error => {
+                this.client.say(message.author,
+                    `There was an error unsubscribing from notifications:\n${error}.`
+                );
+            });
+        }
+
+        this.client.say(message.author, `Invalid command. Usage:
+- wafflebot notify subscribe myemail@example.com
+- wafflebot notify unsubscribe`);
+
+        return Promise.reject();
     }
 
     /**

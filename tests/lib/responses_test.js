@@ -1,15 +1,14 @@
 import 'mocha';
-import sinon from 'sinon';
-import chai from 'chai';
-import Promise from 'bluebird';
 
+import chai from 'chai';
+import sinon from 'sinon';
+import Promise from 'bluebird';
+import Responses from '../../src/lib/responses.js';
 import {
     LoggerStub,
     MessageStub,
     fsStub,
-} from 'testing/stub_factories.js';
-
-import Responses from 'src/lib/responses.js';
+} from '../../testing/stub_factories.js';
 
 describe('Responses', function () {
     let sandbox;
@@ -35,13 +34,12 @@ describe('Responses', function () {
         sandbox.stub(responses, 'add');
 
         return Responses.prototype._loadResponses.call(responses).then(() => {
-            chai.assert(responses.add.calledTwice, "Correct number of responses were not loaded in");
+            chai.assert(responses.add.calledTwice, 'Correct number of responses were not loaded in');
         });
     });
 
 
     describe('#_compileResponseBody compiles response body', function () {
-
         let message;
 
         beforeEach(function () {
@@ -49,15 +47,15 @@ describe('Responses', function () {
         });
 
         it('should replace parts', function () {
-            const compiledResponseBody = responses._compileResponseBody("test {author}", message, []);
+            const compiledResponseBody = responses._compileResponseBody('test {author}', message, []);
             chai.assert.equal(compiledResponseBody, `test ${message.author}`);
         });
 
         it('should replace numbered parts', function () {
             const compiledResponseBody = responses._compileResponseBody(
-                "test {$0} test test {$1}",
+                'test {$0} test test {$1}',
                 message,
-                ['foo', 'bar']
+                ['foo', 'bar', ]
             );
 
             chai.assert.equal(compiledResponseBody, 'test foo test test bar');
@@ -69,12 +67,12 @@ describe('Responses', function () {
         const compiledReponse = {};
         sandbox.stub(responses, '_compileResponseBody').returns(compiledReponse);
 
-        chai.assert(responses._getCompiledResponse({body:''}, {}, {}), compiledReponse);
+        chai.assert(responses._getCompiledResponse({ body: '', }, {}, {}), compiledReponse);
     });
 
 
     it('#_getCompiledRegexString compiles regex string for numbered parts', function () {
-        const result = responses._getCompiledRegexString({regex: '{$0} blah blah {$1}'});
+        const result = responses._getCompiledRegexString({ regex: '{$0} blah blah {$1}', });
         chai.assert.match('foo blah blah bar', result);
     });
 
@@ -85,11 +83,10 @@ describe('Responses', function () {
             body: 'bar',
         });
 
-        chai.assert.propertyVa;(responses._responses.get('foo'), 'body', 'bar');
+        chai.assert.propertyVa; (responses._responses.get('foo'), 'body', 'bar');
     });
 
     describe('#maybeGetResponse', function () {
-        
         let message;
 
         beforeEach(function () {
@@ -102,16 +99,15 @@ describe('Responses', function () {
         });
 
         it('returns a response', function () {
-            message.body = "foo";
+            message.body = 'foo';
             const response = responses.maybeGetResponse(message);
             chai.assert.equal(response.body, 'bar');
         });
 
         it('does not return a response', function () {
-            message.body = "asdfshakfg";
+            message.body = 'asdfshakfg';
             const response = responses.maybeGetResponse(message);
-            chai.assert.notOk(response)
+            chai.assert.notOk(response);
         });
     });
-
 });

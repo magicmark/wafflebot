@@ -1,18 +1,18 @@
 import Promise from 'bluebird';
 import request from 'request-promise';
 
-import { LentilBase, LentilDep } from 'lentildi';
+import { LentilBase, LentilDep, } from 'lentildi';
 
 export default class Meme extends LentilBase {
 
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             logger: LentilDep.Provided('logger'),
             request,
-        }
+        };
     }
 
     /**
@@ -71,7 +71,7 @@ export default class Meme extends LentilBase {
         }
 
         const paramsWithoutPassword = Object.assign({}, params, {
-            password: "******",
+            password: '******',
         });
         this.logger.info('Creating meme', text, paramsWithoutPassword);
 

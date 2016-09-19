@@ -3,8 +3,8 @@ import sinon from 'sinon';
 import chai from 'chai';
 import Promise from 'bluebird';
 
-import Message from 'src/lib/message.js';
-import Command from 'src/lib/command.js';
+import Message from '../../src/lib/message.js';
+import Command from '../../src/lib/command.js';
 
 describe('Message', function () {
     let message;
@@ -108,5 +108,4 @@ describe('Message', function () {
             chai.assert.equal(message.command, Command.DEFAULT);
         });
     });
-
 });

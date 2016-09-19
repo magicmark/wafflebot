@@ -2,13 +2,14 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Message from 'src/lib/message.js';
-import ActionHandler from 'src/lib/action_handler.js';
+import ActionHandler from '../../src/lib/action_handler.js';
+import Message from '../../src/lib/message.js';
 import Promise from 'bluebird';
 import {
     LoggerStub,
     MessageStub,
-} from 'testing/stub_factories.js';
+    ConfigFilesLoaderStub,
+} from '../../testing/stub_factories.js';
 
 describe('Action Handler', function () {
     let actionHandler;
@@ -19,10 +20,8 @@ describe('Action Handler', function () {
         sandbox = sinon.sandbox.create();
 
         actionHandler = new ActionHandler({
+            configFilesLoader: ConfigFilesLoaderStub(),
             client: {},
-            watchlist: {},
-            meme: {},
-            responses: {},
             logger: LoggerStub(),
         });
 
@@ -35,58 +34,90 @@ describe('Action Handler', function () {
     });
 
     describe('#_checkRoomGuard', function () {
-
         beforeEach(function () {
             dummyMessage.isPrivateMessage = true;
         });
 
-        it('should return be true if not private message', function () {
+        it('return should be true if not private message', function () {
             dummyMessage.isPrivateMessage = false;
             chai.assert.isTrue(actionHandler._checkRoomGuard(dummyMessage));
-            chai.assert(actionHandler.client.say.notCalled);
         });
 
-        it('should return be false if no response arg', function () {
+        it('return should be false if no response arg', function () {
             chai.assert.isFalse(actionHandler._checkRoomGuard(dummyMessage));
-            chai.assert(actionHandler.client.say.calledOnce);
         });
 
-        it('should return be true if response arg but no room guard', function () {
+        it('return should be true if response arg but no room guard', function () {
             chai.assert.isTrue(actionHandler._checkRoomGuard(dummyMessage, {}));
         });
 
-        it('should return be false if response arg and room guard', function () {
-            chai.assert.isFalse(actionHandler._checkRoomGuard(dummyMessage, { roomGuard: true }));
+        it('return should be false if response arg and room guard', function () {
+            chai.assert.isFalse(actionHandler._checkRoomGuard(dummyMessage, { roomGuard: true, }));
         });
-
     });
 
 
     describe('#joinRoom', function () {
-
         beforeEach(function () {
             actionHandler.client.join = sandbox.stub();
-        })
-
-        it('should not join room with invalid room name', function () {
-            actionHandler.joinRoom(dummyMessage, 'asdsf');
-            chai.assert(actionHandler.client.join.notCalled);
+            actionHandler.configFilesLoader.getFileJson = sandbox.stub().returns(
+                Promise.resolve([])
+            );
         });
 
-        it.skip('should join room with valid room name', function () {
-            return actionHandler.joinRoom(dummyMessage, '#test123').finally(() => {
+        it('should not join room with invalid room name', function () {
+            return actionHandler.joinRoom(dummyMessage, 'asdsf').catch(err => {
+                chai.assert(actionHandler.client.join.notCalled);
+            });
+        });
+
+        it('should join room with valid room name', function () {
+            actionHandler.configFilesLoader.writeFileJson = sandbox.stub().returns(
+                Promise.resolve()
+            );
+
+            return actionHandler.joinRoom(dummyMessage, '#test123').then(() => {
                 chai.assert(actionHandler.client.join.calledWith('#test123'));
-                chai.assert(false)
             });
         });
     });
 
+
+    describe('#fightMarley', function () {
+        let dummyMessage;
+
+        beforeEach(function () {
+            dummyMessage = MessageStub();
+        });
+
+        it('should do nothing not in a room', function () {
+            actionHandler._checkRoomGuard = sandbox.stub().returns(false);
+            return actionHandler.fightMarley(dummyMessage).catch(err => {
+                chai.assert(true);
+            });
+        });
+
+        it.skip('TODO: Add fake timers to reenable test', 'should fight marley in a room', function () {
+            actionHandler._checkRoomGuard = sandbox.stub().returns(true);
+            actionHandler.client = {
+                say: sandbox.stub(),
+                action: sandbox.stub(),
+            };
+
+            return actionHandler.fightMarley(dummyMessage).then(err => {
+                chai.assert(actionHandler.client.action.calledOnce);
+                chai.assert(actionHandler.client.say.calledTwice);
+            });
+        });
+    });
+
+
     describe('#handleOther', function () {
-        
         beforeEach(function () {
             actionHandler._checkRoomGuard = sandbox.stub().returns(true);
+            actionHandler._checkPrefixGuard = sandbox.stub().returns(true);
             actionHandler.responses = {
-                maybeGetResponse: sandbox.stub()
+                maybeGetResponse: sandbox.stub(),
             };
         });
 
@@ -97,14 +128,20 @@ describe('Action Handler', function () {
         it('should do nothing with a room guard', function () {
             actionHandler._checkRoomGuard.returns(false);
             actionHandler.responses.maybeGetResponse.returns({});
-            dummyMessage.isPrivateMessage = true;
+
+            chai.assert.isFalse(actionHandler.handleOther(dummyMessage));
+        });
+
+        it('should do nothing with a prefix guard', function () {
+            actionHandler._checkPrefixGuard.returns(false);
+            actionHandler.responses.maybeGetResponse.returns({});
 
             chai.assert.isFalse(actionHandler.handleOther(dummyMessage));
         });
 
         it('should respond to user', function () {
             dummyMessage.isPrivateMessage = true;
-            actionHandler.client = { say: sandbox.stub() };
+            actionHandler.client = { say: sandbox.stub(), };
             actionHandler.responses.maybeGetResponse.returns({
                 body: 'what a great test message',
                 delay: 0,
@@ -119,7 +156,7 @@ describe('Action Handler', function () {
         });
 
         it('should respond to user', function () {
-            actionHandler.client = { say: sandbox.stub() };
+            actionHandler.client = { say: sandbox.stub(), };
             actionHandler.responses.maybeGetResponse.returns({
                 body: 'what a great test message',
                 delay: 0,
@@ -132,11 +169,9 @@ describe('Action Handler', function () {
                 ));
             });
         });
-
     });
 
     describe('#notifications', function () {
-
         it('should do nothing with a public message', function () {
             dummyMessage.isPrivateMessage = false;
 
@@ -145,13 +180,24 @@ describe('Action Handler', function () {
             chai.assert.include(actionHandler.client.say.args[0][1], 'to set up notifications');
         });
 
-        it('should set up subscription', function () {
+        it('should set up subscription successfully', function () {
             dummyMessage.isPrivateMessage = true;
             dummyMessage.parts = 'notify subscribe test@test.com'.split(' ');
             actionHandler.watchlist.subscribe = sandbox.stub().returns(Promise.resolve());
 
             return actionHandler.notifications(dummyMessage).finally(() => {
-                chai.assert(actionHandler.watchlist.subscribe.calledWith('isaac asimov', 'test@test.com'));
+                chai.assert(actionHandler.watchlist.subscribe.calledWith(dummyMessage.author, 'test@test.com'));
+                chai.assert(actionHandler.client.say.calledOnce);
+            });
+        });
+
+        it('should unsubscribe successfully', function () {
+            dummyMessage.isPrivateMessage = true;
+            dummyMessage.parts = 'notify unsubscribe test@test.com'.split(' ');
+            actionHandler.watchlist.unsubscribe = sandbox.stub().returns(Promise.resolve());
+
+            return actionHandler.notifications(dummyMessage).finally(() => {
+                chai.assert(actionHandler.watchlist.unsubscribe.calledWith(dummyMessage.author));
                 chai.assert(actionHandler.client.say.calledOnce);
             });
         });
@@ -165,7 +211,6 @@ describe('Action Handler', function () {
                 chai.assert.include(actionHandler.client.say.args[0][1], 'error');
             });
         });
-
     });
 
     it('#makeMeme should make a meme', function () {
@@ -176,5 +221,4 @@ describe('Action Handler', function () {
             chai.assert(actionHandler.client.say.calledWith('#bbcthree', 'isaac asimov: url'));
         });
     });
-
 });

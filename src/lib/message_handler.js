@@ -1,24 +1,25 @@
-import { LentilBase, LentilDep } from 'lentildi';
+import { LentilBase, LentilDep, } from 'lentildi';
 
 import ActionHandler from './action_handler.js';
 import Command from './command.js';
 import Mailer from './mailer.js';
 import Message from './message.js';
+import WatchList from './watchlist.js';
 
 export default class MessageHandler extends LentilBase {
 
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             logger: LentilDep.Provided('logger'),
             client: LentilDep.Provided('client'),
             mailer: Mailer,
-            watchlist: {},
+            watchlist: WatchList,
             actions: ActionHandler,
             Message,
-        }
+        };
     }
 
     /**
@@ -56,9 +57,9 @@ export default class MessageHandler extends LentilBase {
     /**
      * Handles IRC messages to a channel
      *
-     * @param {String} from    - The username of the message author
-     * @param {String} room    - Channel name
-     * @param {String} message - The text of the message
+     * @param {string} author - The username of the message author
+     * @param {string} channel - Channel name
+     * @param {string} body - The text of the message
      */
     message(author, channel, body) {
         const message = new this.Message({
@@ -71,7 +72,7 @@ export default class MessageHandler extends LentilBase {
         this._handleMessage(message);
 
         // Possibly send out an email to a watched user
-     //   this.watchlist.checkMessage(message);
+        this.watchlist.checkMessage(message);
     }
 
     /**

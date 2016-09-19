@@ -1,25 +1,19 @@
-import Promise from 'bluebird';
 import commander from 'commander';
 import log4js from 'log4js';
+import Promise from 'bluebird';
+import { Lentil, } from 'lentildi';
 
-
-// import Client from './lib/client.js';
-import Meme from './lib/meme.js';
-import Mailer from './lib/mailer.js';
-import MessageHandler from './lib/message_handler.js';
-import ConfigFilesLoader, { JSONFiles } from './lib/config_files.js';
-
-// import Responses from './lib/responses.js';
 import getIrcClient from './lib/irc_client.js';
-// import FileActions from './lib/file_actions.js';
-import BigWaffle from './static/waffle.js';
-// import irc from 'irc';
+import BigWaffle from './bin/waffle.js';
+import Mailer from './lib/mailer.js';
+import Meme from './lib/meme.js';
+import MessageHandler from './lib/message_handler.js';
+import ConfigFilesLoader, { JSONFiles, } from './lib/config_files.js';
 
-import { Lentil } from 'lentildi';
 
 export default class Wafflebot {
 
-    constructor ({
+    constructor({
         _getIrcClient = getIrcClient,
         _require = require,
         _commander = commander,
@@ -32,11 +26,11 @@ export default class Wafflebot {
         this.log4js = _log4js;
         this.process = _process;
 
-        this.config = null; 
+        this.config = null;
         this._setup();
     }
 
-    _setup () {
+    _setup() {
         const version = this.require('./../package.json').version;
         this.commander.version(version)
             .option('-d, --config-dir [optional]', 'specify config directory (Default: ~/.wafflebot)')
@@ -65,7 +59,7 @@ export default class Wafflebot {
             .provide('configDirectory', commander.configDir);
     }
 
-    _initialiseClient () {
+    _initialiseClient() {
         const client = this.getIrcClient({
             server: this.config.irc.server,
             password: this.config.irc.password,
@@ -75,7 +69,7 @@ export default class Wafflebot {
         this.lentil.provide('client', client);
     }
 
-    _commenceWaffling () {
+    _commenceWaffling() {
         const messageHandler = this.lentil.create(MessageHandler);
 
         const configFilesLoader = this.lentil.getInstance(ConfigFilesLoader);
@@ -104,7 +98,7 @@ export default class Wafflebot {
         });
     }
 
-    start () {
+    start() {
         const configFilesLoader = this.lentil.create(ConfigFilesLoader);
 
         return Promise.resolve()

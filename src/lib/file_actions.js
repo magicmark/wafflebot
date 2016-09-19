@@ -20,5 +20,4 @@ export default class FileActions {
         this.fs = _fs;
         this.path = _path;
     }
-};
-
+}

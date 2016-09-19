@@ -1,19 +1,19 @@
 import moment from 'moment';
 import nodemailer from 'nodemailer';
 import Promise from 'bluebird';
-import { LentilBase, LentilDep } from 'lentildi';
+import { LentilBase, LentilDep, } from 'lentildi';
 
 export default class Mailer extends LentilBase {
 
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             logger: LentilDep.Provided('logger'),
             nodemailer,
             moment,
-        }
+        };
     }
 
     /**

@@ -2,7 +2,7 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import ConfigFilesLoader, { JSONFiles } from 'src/lib/config_files.js';
+import ConfigFilesLoader, { JSONFiles, } from '../../src/lib/config_files.js';
 
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 import Promise from 'bluebird';
 import {
     LoggerStub,
-} from 'testing/stub_factories.js';
+} from '../../testing/stub_factories.js';
 
 describe('Config Files Loader', function () {
     let configFilesLoader;
@@ -32,12 +32,11 @@ describe('Config Files Loader', function () {
     });
 
     it('constructor should initialise correctly', function () {
-        chai.assert.equal('test/dir', configFilesLoader._configDir);        
-        chai.assert(configFilesLoader._parseConfigDir.calledOnce);     
+        chai.assert.equal('test/dir', configFilesLoader._configDir);
+        chai.assert(configFilesLoader._parseConfigDir.calledOnce);
     });
 
     describe('#_parseConfigDir', function () {
-
         beforeEach(function () {
             ConfigFilesLoader.prototype._parseConfigDir.restore();
         });
@@ -69,9 +68,8 @@ describe('Config Files Loader', function () {
 
             chai.assert.equal(configFilesLoader.resolvedConfigDirectory, '/absolute/path');
         });
-
     });
- 
+
     describe('#_checkConfigDirExists', function () {
         beforeEach(function () {
             configFilesLoader.fs.statAsync = sandbox.stub();
@@ -79,7 +77,7 @@ describe('Config Files Loader', function () {
 
         it('should throw error if directory is not directory', function () {
             configFilesLoader.fs.statAsync.returns(Promise.resolve({
-                isDirectory: sandbox.stub().returns(false)
+                isDirectory: sandbox.stub().returns(false),
             }));
 
             return chai.assert.isRejected(configFilesLoader._checkConfigDirExists());
@@ -87,12 +85,10 @@ describe('Config Files Loader', function () {
 
         it('should not throw error if directory exists', function () {
             configFilesLoader.fs.statAsync.returns(Promise.resolve({
-                isDirectory: sandbox.stub().returns(true)
+                isDirectory: sandbox.stub().returns(true),
             }));
 
             return chai.assert.isFulfilled(configFilesLoader._checkConfigDirExists());
         });
     });
-
-
 });

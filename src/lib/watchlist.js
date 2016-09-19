@@ -1,7 +1,9 @@
-import { LentilBase, LentilDep } from 'lentildi';
+import { LentilBase, LentilDep, } from 'lentildi';
 
 import Mailer from './mailer.js';
-import ConfigFilesLoader, { JSONFiles } from './config_files.js';
+import ConfigFilesLoader, { JSONFiles, } from './config_files.js';
+import validator from 'validator';
+import Promise from 'bluebird';
 
 /**
  * WatchList, to check all incoming messages to see if we need to notify anyone.
@@ -11,53 +13,117 @@ export default class WatchList extends LentilBase {
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             mailer: Mailer,
             configFilesLoader: ConfigFilesLoader,
             logger: LentilDep.Provided('logger'),
+        };
+    }
+
+    constructor(...args) {
+        super(...args);
+
+        this.watchedUsers = {};
+        this.watchedUsersRegex = new Map();
+
+        this._loadWatchedUsers();
+    }
+
+    _loadWatchedUsers() {
+        return this.configFilesLoader.getFileJson(JSONFiles.WATCH_USERS).then(users => {
+            this.watchedUsers = users;
+            this._buildRegexCache();
+        })
+        .catch(error => {
+            this.logger.error(error);
+        });
+    }
+
+    _getRegexForUser(user) {
+        return new RegExp(`(^|\\s)${user}($|:|-|\\s)`, 'i');
+    }
+
+    _buildRegexCache() {
+        this.watchedUsersRegex.clear();
+
+        for (const user in this.watchedUsers) {
+            const regex = this._getRegexForUser(user);
+            this.watchedUsersRegex.set(user, regex);
         }
     }
 
-  /**
-   * Creates a subscription in WatchList
-   *
-   * @param  {String} user  Username to watch for
-   * @param  {String} email Email address to send to
-   *
-   * @return {Promise} Promise containing the result of permanently storing the subscription
-   */
+    /**
+     * Creates a subscription in WatchList
+     *
+     * @param  {string} user  Username to watch for
+     * @param  {string} email Email address to send to
+     *
+     * @return {Promise} Promise containing the result of permanently storing the subscription
+     */
     subscribe(user, email) {
-        this.users[user] = {
+        this.logger.info(`Setting up notifications for "${user}" to "${email}"`);
+
+        if (!validator.isEmail(email)) {
+            this.logger.error(`${email} is not a valid email address`);
+            return Promise.reject('Invalid email addresss');
+        }
+
+        this.watchedUsers[user] = {
             email,
         };
 
-        return file_actions.add_user_watch(user, email);
+        this._buildRegexCache();
+
+        // save users object to file
+        return Promise.resolve().then(() => this.configFilesLoader.writeFileJson(
+            JSONFiles.WATCH_USERS,
+            this.watchedUsers
+        ));
     }
 
+    /**
+     * Unsubscribes a user from Watchlist
+     *
+     * @param  {string} user Username
+     * @return {Promise} Promise containing the result of removing the subscription
+     */
+    unsubscribe(user) {
+        this.logger.info(`Removing notifications for "${user}"`);
 
-    checkMessage (message) {
+        delete this.watchedUsers[user];
+
+        this._buildRegexCache();
+
+        // save users object to file
+        return Promise.resolve().then(() => this.configFilesLoader.writeFileJson(
+            JSONFiles.WATCH_USERS,
+            this.watchedUsers
+        ));
+    }
+
+    checkMessage(message) {
         // Check if the message contained the name of a user we're watching
-        const emailAddress = this.watchlist.check(message);
+        const emailAddress = this._maybeGetEmail(message);
         if (emailAddress) {
+            this.logger.info(`Found matched message for user "${message.author}". Sending email to "${emailAddress}"`);
             this.mailer.send(emailAddress, message);
         }
-
-
     }
 
+    /**
+     * Method to check a message for all users that we need to listen for
+     *
+     * @param  {Message} message The message
+     *
+     * @return {string|null} If the message matched someone's username, return their email address.
+     */
+    _maybeGetEmail(message) {
+        for (const user in this.watchedUsers) {
+            const regex = this.watchedUsersRegex.get(user);
 
-  /**
-   * Method to check a message for all users that we need to listen for
-   * @param  {String} message The message text
-   *
-   * @return {String|null} If the message matched someone's username, return their email address.
-   */
-    _check(message) {
-      // TODO: factor this regex out into a small testable function
-        for (const user in this.users) {
-            if (RegExp('(^| +)' + user, 'ig').test(message)) {
-                return this.users[user].email;
+            if (regex.test(message.body)) {
+                return this.watchedUsers[user].email;
             }
         }
     }

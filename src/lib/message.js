@@ -12,10 +12,10 @@ export default class Message {
 
     /**
      * Creates a Message instance.
-     * 
+     *
      * // TODO(magicmark):
      * This is a class I would like to make more static and possibly immutable.
-     * 
+     *
      * @param  {string} options.body - Raw message text
      * @param  {string} options.author - Message author
      * @param  {string} options.channel - Channel name
@@ -54,7 +54,7 @@ export default class Message {
 
     /**
      * Returns the split formatted message for later processing
-     * 
+     *
      * @return {array} array of strings
      */
     get parts() {

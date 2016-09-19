@@ -13,7 +13,8 @@
     "moment": "^2.11.2",
     "nodemailer": "^2.5.0",
     "request-promise": "^3.0.0",
-    "unirest": "^0.4.2"
+    "unirest": "^0.4.2",
+    "validator": "^5.7.0"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
@@ -23,7 +24,7 @@
     "coveralls": "^2.11.12",
     "eslint": "^3.1.0",
     "eslint-config-airbnb": "^9.0.1",
-    "eslint-plugin-import": "^1.10.3",
+    "eslint-plugin-import": "^1.15.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^5.2.2",
     "jsdoc": "^3.4.0",
@@ -48,9 +49,9 @@
   },
   "homepage": "https://github.com/magicmark/wafflebot",
   "nyc": {
-    "lines": 100,
-    "branches": 80,
-    "functions": 80,
+    "lines": 80,
+    "branches": 75,
+    "functions": 65,
     "reporter": [
       "text",
       "lcov",

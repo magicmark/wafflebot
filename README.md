@@ -37,7 +37,7 @@ Create a `config.json` file with the following sample content
 }
 ```
 
-Note: Wafflebot uses [nodemailer](https://github.com/nodemailer/nodemailer) for sending emails - see their documentation for info about the `mail_transport_string` 
+Note: Wafflebot uses [nodemailer](https://github.com/nodemailer/nodemailer) for sending emails - see their documentation for info about the `mail_transport_string`
 
 You can then run wafflebot by running
 ```bash

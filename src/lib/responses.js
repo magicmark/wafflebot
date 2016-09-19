@@ -1,37 +1,37 @@
 import path from 'path';
-import BigWaffle from './../static/waffle.js';
-import WaffleHistory from './../static/waffle_history.js';
+import BigWaffle from './../bin/waffle.js';
+import WaffleHistory from './../bin/waffle_history.js';
 
 
 import Promise from 'bluebird';
 import fs from 'fs';
 Promise.promisifyAll(fs);
 
-import { LentilBase, LentilDep } from 'lentildi';
+import { LentilBase, LentilDep, } from 'lentildi';
 
 export default class Responses extends LentilBase {
 
     /**
      * Declare Dependencies
      */
-    static lentilDeps () {
+    static lentilDeps() {
         return {
             logger: LentilDep.Provided('logger'),
             BigWaffle,
             WaffleHistory,
             path,
             fs,
-        }
+        };
     }
 
-    constructor (...args) {
+    constructor(...args) {
         super(...args);
 
         this._responses = new Map();
         this._loadResponses();
     }
 
-    _loadResponses () {
+    _loadResponses() {
         const responsesPath = this.path.join(__dirname, '../responses.json');
 
         return this.fs.readFileAsync(responsesPath, 'utf8').then(data => {
@@ -64,7 +64,7 @@ export default class Responses extends LentilBase {
 
     /**
      * Turn `{$0} blah blah {$1}` into `(\w+) blah blah (\w+)`
-     * 
+     *
      * @param  {Response} response - Response object
      * @return {RegExp} Compiled regex object
      */
@@ -73,20 +73,19 @@ export default class Responses extends LentilBase {
         return new RegExp(compiledRegexString, 'i');
     }
 
-    add ({match, body, roomGuard = false, requiresPrefix = false, delay = 0}) {
+    add({ match, body, roomGuard = false, requiresPrefix = false, delay = 0, }) {
         this._responses.set(match, {
             regex: match,
-            body: body,
-            roomGuard: roomGuard,
-            requiresPrefix: requiresPrefix,
-            delay: delay,
+            body,
+            roomGuard,
+            requiresPrefix,
+            delay,
         });
     }
 
-    maybeGetResponse (message) {
+    maybeGetResponse(message) {
         // Loop through each response object
         for (const response of this._responses.values()) {
-
             // Compile and test message body
             const regex = this._getCompiledRegexString(response);
             const match = message.body.match(regex);

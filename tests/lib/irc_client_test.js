@@ -1,9 +1,9 @@
 import 'mocha';
-import sinon from 'sinon';
-import chai from 'chai';
-import Promise from 'bluebird';
 
-import ircClient from 'src/lib/irc_client.js';
+import chai from 'chai';
+import ircClient from '../../src/lib/irc_client.js';
+import sinon from 'sinon';
+import Promise from 'bluebird';
 
 describe('IRC Connection Factory', function () {
     let meme;

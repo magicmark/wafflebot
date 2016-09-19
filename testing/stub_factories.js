@@ -20,6 +20,9 @@ export const MessageStub = () => ({
     channel: '#bbcthree',
 });
 
-export const WatchListStub = () => ({});
+export const ConfigFilesLoaderStub = () => ({
+    getFileJson: () => {},
+    writeFileJson: () => {},
+});
 
 export const ActionHandlerStub = () => ({});

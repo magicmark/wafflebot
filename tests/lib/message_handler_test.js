@@ -2,13 +2,12 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Message from 'src/lib/message.js';
-import MessageHandler from 'src/lib/message_handler.js';
+import Message from '../../src/lib/message.js';
+import MessageHandler from '../../src/lib/message_handler.js';
 import Promise from 'bluebird';
 import {
-    ActionHandlerStub,
-    WatchListStub,
-} from 'testing/stub_factories.js';
+    LoggerStub,
+} from '../../testing/stub_factories.js';
 
 describe('Message Handler', function () {
     let messageHandler;
@@ -18,14 +17,10 @@ describe('Message Handler', function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         messageHandler = new MessageHandler({
+            logger: LoggerStub(),
             client: {},
-            mailer: {},
-            meme: {},
-            logger: {},
-            watchlist: WatchListStub(),
-            actionhandler: ActionHandlerStub(), 
-            _Message: {},
         });
+
         dummyMessage = new Message({
             body: 'dummy body',
             author: 'dummy author',
@@ -38,7 +33,6 @@ describe('Message Handler', function () {
     });
 
     describe('#_handleMessage', function () {
-
         it('should handle notify', function () {
             dummyMessage._body = 'wafflebot notify blah blah';
             messageHandler.actions.notifications = sandbox.stub();
@@ -78,47 +72,32 @@ describe('Message Handler', function () {
             messageHandler._handleMessage(dummyMessage);
             chai.assert(messageHandler.actions.handleOther.calledWith(dummyMessage));
         });
-
     });
 
     describe('#message', function () {
-        let watchListCheckStub;
-
         beforeEach(function () {
-            watchListCheckStub = sandbox.stub();
             messageHandler.Message = sandbox.stub();
 
             sandbox.stub(messageHandler, '_handleMessage');
-            sandbox.stub(messageHandler, 'watchlist', {
-                check: watchListCheckStub,
-            });
+            messageHandler.watchlist = {
+                checkMessage: sandbox.stub(),
+            };
         });
 
         it('should handle a message', function () {
-            messageHandler.message('baldrick', '#piesxhop', 'I have a cunning plan');
+            messageHandler.message('baldrick', '#pieshop', 'I have a cunning plan');
 
             chai.assert.deepEqual(messageHandler.Message.getCall(0).args[0], {
                 body: 'I have a cunning plan',
                 author: 'baldrick',
-                channel: '#piesxhop',
+                channel: '#pieshop',
             });
             chai.assert(messageHandler._handleMessage.calledOnce);
-        });
-
-        it('should notify a watched user', function () {
-            watchListCheckStub.returns('email@test.com');
-            messageHandler.mailer = {
-                send: sandbox.stub()
-            };
-
-            messageHandler.message('baldrick', '#piesxhop', 'I have a cunning plan');
-
-            chai.assert(messageHandler.mailer.send.calledWith('email@test.com'));
+            chai.assert(messageHandler.watchlist.checkMessage.calledOnce);
         });
     });
 
     describe('#pm', function () {
-
         beforeEach(function () {
             messageHandler.Message = sandbox.stub();
             sandbox.stub(messageHandler, '_handleMessage');
@@ -135,5 +114,4 @@ describe('Message Handler', function () {
             chai.assert(messageHandler._handleMessage.calledOnce);
         });
     });
-
 });
