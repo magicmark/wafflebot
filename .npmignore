@@ -10,5 +10,6 @@ Makefile
 coverage
 npm-debug.log
 requirements-dev.txt
+testing
 tests
 venv
