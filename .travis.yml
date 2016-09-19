@@ -1,7 +1,23 @@
-language: node_js
-node_js:
-    - 6
-    - 5
+sudo: false
+language: python
+python:
+    - "3.5"
+install:
+    - nvm install 6
+env:
+    global:
+        - COVERALLS_SERVICE_NAME=travis-ci
+        - COVERALLS_REPO_TOKEN=MUPeiBPH7d1yj7tt2yt3VNkkllD40Q9b3
 script:
+    - make test
     - make coveralls
-    - make eslint
+deploy:
+    provider: npm
+    email: mark@larah.me
+    skip_cleanup: true
+    api_key:
+        secure: lp2fnozrTICW/Z55ecZlSh3KN0WhIIjLbj6llhlaMFrGNB7EIAuDBLrnoyohGQ5lJkRlZE+C8EoIkiSmXVVG+8vI0PHe3m1sTWTFHfUGAHNruRxapzfPhKd3h19+IJoPmTQwJYR7F09yj0gIMNzUIc+fjSUiCVW9V6LIXs30cXrp/iTSKJ68P2ihEfDB3iVID+uUIv/9DjFmbsezXcQTyCptzZ6kjYV19fyx/rSp76J/nPTQIB19wag7U06y6BRYeOOAF1kDnUKeuZ37hXKRFo0cQwxBpG9kj/ovpHY56+PrRYLLtsOYqW8tYpK7HMTtSh3SZ7Aw6BYR6jMA99cau9f+zvIH7R1lgPBfEwHjauFS7rNZ/sUaLU1M9Yd0YTY5A5wbV0DHBJjhzrXR3BWfHrTi66f0/uuDl+yAp/Ro0hbMRsxuEPLeNz7Z0J0pO/zUxhX7bHCMKL2Ik/QbXj5z5ye/KxLD3ZytNjsONlHGREW7IUQKwrL/waIHqPeJBPujO0Z9xQczKT9kNiLFUM4/yG+szdMM2mgd2wyHUZDWZVAxnruRFFb5BQn5kfcqXqBK1eArnwutR2yarV7WIuSf7E3mkTBOjhq89HjUrbRb1pIwpSpaWQsMmlncabrR2Y7CgPtYfrk0eAwfw8j4bJg+0UQthgcORaj7aFc8NIMTJos=
+    on:
+        branch: master
+        tags: true
+        repo: magicmark/wafflebot
