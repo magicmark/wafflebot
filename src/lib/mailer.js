@@ -1,7 +1,6 @@
 import moment from 'moment';
 import nodemailer from 'nodemailer';
-import Promise from 'bluebird';
-import { LentilBase, LentilDep, } from 'lentildi';
+import { LentilBase, LentilDep } from 'lentildi';
 
 export default class Mailer extends LentilBase {
 
@@ -19,12 +18,13 @@ export default class Mailer extends LentilBase {
     /**
      * Constructs a Mailer object
      *
-     * @param  {string} mail_transport_string - SMTP connection string
+     * @param  {string} mailTransportString - SMTP connection string
+     * @see {@link https://github.com/nodemailer/nodemailer}
      */
-    constructor(mail_transport_string, ...args) {
+    constructor(mailTransportString, ...args) {
         super(...args);
 
-        this.transporter = this.nodemailer.createTransport(mail_transport_string);
+        this.transporter = this.nodemailer.createTransport(mailTransportString);
     }
 
     /**

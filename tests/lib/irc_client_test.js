@@ -1,12 +1,11 @@
 import 'mocha';
 
 import chai from 'chai';
-import ircClient from '../../src/lib/irc_client.js';
 import sinon from 'sinon';
-import Promise from 'bluebird';
+
+import ircClient from '../../src/lib/irc_client.js';
 
 describe('IRC Connection Factory', function () {
-    let meme;
     let sandbox;
 
     beforeEach(function () {
@@ -18,7 +17,7 @@ describe('IRC Connection Factory', function () {
     });
 
     it('should connect with correct args', function () {
-        const ircStub = { Client: sandbox.stub(), };
+        const ircStub = { Client: sandbox.stub() };
 
         const connection = ircClient({
             server: 'dummyServer',

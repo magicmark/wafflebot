@@ -3,6 +3,7 @@ import 'mocha';
 import chai from 'chai';
 import sinon from 'sinon';
 import Promise from 'bluebird';
+
 import WatchList from '../../src/lib/watchlist.js';
 import {
     LoggerStub,
@@ -80,11 +81,11 @@ describe('WatchList', function () {
             'asdaddaveasdas',
         ];
 
-        validMessages.forEach(message => {
+        validMessages.forEach((message) => {
             chai.assert.isOk(regex.test(message), `Expected "${message}" to match`);
         });
 
-        invalidMessage.forEach(message => {
+        invalidMessage.forEach((message) => {
             chai.assert.isNotOk(regex.test(message), `Expected "${message}" not to match`);
         });
     });
@@ -110,7 +111,7 @@ describe('WatchList', function () {
 
     describe('#subscribe', function () {
         it('should reject with an invalid email', function () {
-            return watchlist.subscribe('dave', 'asdfhkgasf').catch(err => {
+            return watchlist.subscribe('dave', 'asdfhkgasf').catch((err) => {
                 chai.assert(err);
             });
         });
@@ -153,7 +154,7 @@ describe('WatchList', function () {
 
         beforeEach(function () {
             dummyMessage = MessageStub();
-            watchlist.mailer = { send: sandbox.stub(), };
+            watchlist.mailer = { send: sandbox.stub() };
         });
 
         it('should do nothing when message is not matchied', function () {
@@ -181,7 +182,7 @@ describe('WatchList', function () {
 
         beforeEach(function () {
             dummyMessage = MessageStub();
-            watchlist.watchedUsers = { dave: { email: 'dave@jmc.com', }, };
+            watchlist.watchedUsers = { dave: { email: 'dave@jmc.com' } };
         });
 
         it('should return an email for a matched message', function () {

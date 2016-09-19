@@ -2,9 +2,9 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
+
 import Mailer from '../../src/lib/mailer.js';
-import Promise from 'bluebird';
-import { MessageStub, LoggerStub, } from '../../testing/stub_factories.js';
+import { MessageStub, LoggerStub } from '../../testing/stub_factories.js';
 
 describe('Mailer', function () {
     let sandbox;
@@ -19,7 +19,7 @@ describe('Mailer', function () {
 
         mailer = new Mailer('dummyMailString', {
             logger: loggerStub,
-            nodemailer: { createTransport: transporterFactoryStub, },
+            nodemailer: { createTransport: transporterFactoryStub },
         });
     });
 

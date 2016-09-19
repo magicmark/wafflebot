@@ -9,7 +9,7 @@ module.exports = {
         "es6": true,
     },
     "rules": {
-        "comma-dangle": ["error", "always"],
+        "comma-dangle": ["error", "always-multiline"],
         "indent": ["error", 4],
 
         // Allow private identifiers
@@ -23,5 +23,8 @@ module.exports = {
                 "LentilDep.Provided",
             ]
         }],
+
+        // TODO: reenable this rule
+        "class-methods-use-this": 0,
     }
 };

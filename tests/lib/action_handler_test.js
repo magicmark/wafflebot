@@ -2,9 +2,9 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import ActionHandler from '../../src/lib/action_handler.js';
-import Message from '../../src/lib/message.js';
 import Promise from 'bluebird';
+
+import ActionHandler from '../../src/lib/action_handler.js';
 import {
     LoggerStub,
     MessageStub,
@@ -52,7 +52,7 @@ describe('Action Handler', function () {
         });
 
         it('return should be false if response arg and room guard', function () {
-            chai.assert.isFalse(actionHandler._checkRoomGuard(dummyMessage, { roomGuard: true, }));
+            chai.assert.isFalse(actionHandler._checkRoomGuard(dummyMessage, { roomGuard: true }));
         });
     });
 
@@ -66,7 +66,7 @@ describe('Action Handler', function () {
         });
 
         it('should not join room with invalid room name', function () {
-            return actionHandler.joinRoom(dummyMessage, 'asdsf').catch(err => {
+            return actionHandler.joinRoom(dummyMessage, 'asdsf').catch(() => {
                 chai.assert(actionHandler.client.join.notCalled);
             });
         });
@@ -84,31 +84,28 @@ describe('Action Handler', function () {
 
 
     describe('#fightMarley', function () {
-        let dummyMessage;
-
-        beforeEach(function () {
-            dummyMessage = MessageStub();
-        });
-
         it('should do nothing not in a room', function () {
             actionHandler._checkRoomGuard = sandbox.stub().returns(false);
-            return actionHandler.fightMarley(dummyMessage).catch(err => {
+            return actionHandler.fightMarley(dummyMessage).catch(() => {
                 chai.assert(true);
             });
         });
 
-        it.skip('TODO: Add fake timers to reenable test', 'should fight marley in a room', function () {
-            actionHandler._checkRoomGuard = sandbox.stub().returns(true);
-            actionHandler.client = {
-                say: sandbox.stub(),
-                action: sandbox.stub(),
-            };
+        it.skip(
+            'TODO: Add fake timers to reenable test',
+            'should fight marley in a room',
+            function () {
+                actionHandler._checkRoomGuard = sandbox.stub().returns(true);
+                actionHandler.client = {
+                    say: sandbox.stub(),
+                    action: sandbox.stub(),
+                };
 
-            return actionHandler.fightMarley(dummyMessage).then(err => {
-                chai.assert(actionHandler.client.action.calledOnce);
-                chai.assert(actionHandler.client.say.calledTwice);
+                return actionHandler.fightMarley(dummyMessage).then(() => {
+                    chai.assert(actionHandler.client.action.calledOnce);
+                    chai.assert(actionHandler.client.say.calledTwice);
+                });
             });
-        });
     });
 
 
@@ -141,7 +138,7 @@ describe('Action Handler', function () {
 
         it('should respond to user', function () {
             dummyMessage.isPrivateMessage = true;
-            actionHandler.client = { say: sandbox.stub(), };
+            actionHandler.client = { say: sandbox.stub() };
             actionHandler.responses.maybeGetResponse.returns({
                 body: 'what a great test message',
                 delay: 0,
@@ -156,7 +153,7 @@ describe('Action Handler', function () {
         });
 
         it('should respond to user', function () {
-            actionHandler.client = { say: sandbox.stub(), };
+            actionHandler.client = { say: sandbox.stub() };
             actionHandler.responses.maybeGetResponse.returns({
                 body: 'what a great test message',
                 delay: 0,
@@ -186,7 +183,10 @@ describe('Action Handler', function () {
             actionHandler.watchlist.subscribe = sandbox.stub().returns(Promise.resolve());
 
             return actionHandler.notifications(dummyMessage).finally(() => {
-                chai.assert(actionHandler.watchlist.subscribe.calledWith(dummyMessage.author, 'test@test.com'));
+                chai.assert(actionHandler.watchlist.subscribe.calledWith(
+                    dummyMessage.author,
+                    'test@test.com'
+                ));
                 chai.assert(actionHandler.client.say.calledOnce);
             });
         });

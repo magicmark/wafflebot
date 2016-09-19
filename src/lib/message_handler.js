@@ -1,4 +1,4 @@
-import { LentilBase, LentilDep, } from 'lentildi';
+import { LentilBase, LentilDep } from 'lentildi';
 
 import ActionHandler from './action_handler.js';
 import Command from './command.js';

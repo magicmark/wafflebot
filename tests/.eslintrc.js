@@ -15,9 +15,16 @@ module.exports = {
         // Add Lentil Deps to whitelist
         "new-cap": ["error", {
             "capIsNewExceptions": [
+                "AuthStub",
+                "ConfigFilesLoaderStub",
                 "LoggerStub",
                 "MessageStub",
             ]
         }],
+
+        // Allow imported code in tests to be specified in devDependencies
+        "import/no-extraneous-dependencies": ["error", {
+            "devDependencies": true,
+        }]
     }
 }

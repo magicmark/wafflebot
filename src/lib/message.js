@@ -20,7 +20,7 @@ export default class Message {
      * @param  {string} options.author - Message author
      * @param  {string} options.channel - Channel name
      */
-    constructor({ body, author, channel, }) {
+    constructor({ body, author, channel }) {
         this._body = body;
 
         // TODO: Investigate why the body might not be a string from time to time

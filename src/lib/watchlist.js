@@ -1,9 +1,9 @@
-import { LentilBase, LentilDep, } from 'lentildi';
-
-import Mailer from './mailer.js';
-import ConfigFilesLoader, { JSONFiles, } from './config_files.js';
 import validator from 'validator';
 import Promise from 'bluebird';
+import { LentilBase, LentilDep } from 'lentildi';
+
+import Mailer from './mailer.js';
+import ConfigFilesLoader, { JSONFiles } from './config_files.js';
 
 /**
  * WatchList, to check all incoming messages to see if we need to notify anyone.
@@ -31,11 +31,11 @@ export default class WatchList extends LentilBase {
     }
 
     _loadWatchedUsers() {
-        return this.configFilesLoader.getFileJson(JSONFiles.WATCH_USERS).then(users => {
+        return this.configFilesLoader.getFileJson(JSONFiles.WATCH_USERS).then((users) => {
             this.watchedUsers = users;
             this._buildRegexCache();
         })
-        .catch(error => {
+        .catch((error) => {
             this.logger.error(error);
         });
     }
@@ -47,10 +47,10 @@ export default class WatchList extends LentilBase {
     _buildRegexCache() {
         this.watchedUsersRegex.clear();
 
-        for (const user in this.watchedUsers) {
+        Object.keys(this.watchedUsers).forEach((user) => {
             const regex = this._getRegexForUser(user);
             this.watchedUsersRegex.set(user, regex);
-        }
+        });
     }
 
     /**
@@ -106,7 +106,11 @@ export default class WatchList extends LentilBase {
         // Check if the message contained the name of a user we're watching
         const emailAddress = this._maybeGetEmail(message);
         if (emailAddress) {
-            this.logger.info(`Found matched message for user "${message.author}". Sending email to "${emailAddress}"`);
+            this.logger.info([
+                `Found matched message for user "${message.author}".`,
+                `Sending email to "${emailAddress}"`,
+            ].join(' '));
+
             this.mailer.send(emailAddress, message);
         }
     }
@@ -119,13 +123,16 @@ export default class WatchList extends LentilBase {
      * @return {string|null} If the message matched someone's username, return their email address.
      */
     _maybeGetEmail(message) {
-        for (const user in this.watchedUsers) {
+        const matchedUsers = Object.keys(this.watchedUsers).filter((user) => {
             const regex = this.watchedUsersRegex.get(user);
+            return regex.test(message.body);
+        });
 
-            if (regex.test(message.body)) {
-                return this.watchedUsers[user].email;
-            }
+        if (matchedUsers.length) {
+            return this.watchedUsers[matchedUsers[0]].email;
         }
+
+        return null;
     }
 
 }

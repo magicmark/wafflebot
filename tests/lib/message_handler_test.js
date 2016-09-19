@@ -2,9 +2,9 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
+
 import Message from '../../src/lib/message.js';
 import MessageHandler from '../../src/lib/message_handler.js';
-import Promise from 'bluebird';
 import {
     LoggerStub,
 } from '../../testing/stub_factories.js';
@@ -66,7 +66,8 @@ describe('Message Handler', function () {
         });
 
         it('should handle default', function () {
-            dummyMessage._body = 'Allow me to be the first to offer Dr. Johnson my most sincere contrafibularities';
+            dummyMessage._body =
+                'Allow me to be the first to offer Dr. Johnson my most sincere contrafibularities';
             messageHandler.actions.handleOther = sandbox.stub();
 
             messageHandler._handleMessage(dummyMessage);

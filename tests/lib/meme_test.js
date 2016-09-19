@@ -2,8 +2,9 @@ import 'mocha';
 
 import chai from 'chai';
 import sinon from 'sinon';
-import Meme from '../../src/lib/meme.js';
 import Promise from 'bluebird';
+
+import Meme from '../../src/lib/meme.js';
 import {
     LoggerStub,
     AuthStub,
@@ -47,11 +48,11 @@ describe('Meme', function () {
             ],
         };
 
-        for (const input in validResults) {
+        Object.keys(validResults).forEach((input) => {
             const lines = validResults[input];
             const result = meme._parseLines(input);
             chai.assert.deepEqual(result, lines, 'meme lines are incorrect');
-        }
+        });
     });
 
     describe('#create', function () {
@@ -60,15 +61,15 @@ describe('Meme', function () {
         let expectedResponse;
 
         beforeEach(function () {
-            expectedPostBody = { 'form': {
-                'template_id': '63278523',
-                'username': authStub.username,
-                'password': authStub.password,
-            }, };
+            expectedPostBody = { form: {
+                template_id: '63278523',
+                username: authStub.username,
+                password: authStub.password,
+            } };
             expectedResponse = {
-                'success': true,
-                'data': {
-                    'url': 'http://dummyurl',
+                success: true,
+                data: {
+                    url: 'http://dummyurl',
                 },
             };
         });
@@ -77,19 +78,21 @@ describe('Meme', function () {
             dummyLines = [];
             sandbox.stub(meme, '_parseLines').returns(dummyLines);
 
-            return meme.create('').catch(err => {
+            return meme.create('').catch((err) => {
                 chai.assert(err);
             });
         });
 
         it('should create a meme with 1 line', function () {
-            dummyLines = ['line 1', ];
+            dummyLines = ['line 1'];
             expectedPostBody.form.text0 = dummyLines[0];
 
             sandbox.stub(meme, '_parseLines').returns(dummyLines);
-            requestStub.post = sandbox.stub().returns(Promise.resolve(JSON.stringify(expectedResponse)));
+            requestStub.post = sandbox.stub().returns(
+                Promise.resolve(JSON.stringify(expectedResponse))
+            );
 
-            return meme.create('').then(url => {
+            return meme.create('').then((url) => {
                 const postCallArgs = requestStub.post.firstCall.args;
                 chai.assert.equal('https://api.imgflip.com/caption_image', postCallArgs[0]);
                 chai.assert.deepEqual(expectedPostBody, postCallArgs[1]);
@@ -98,14 +101,16 @@ describe('Meme', function () {
         });
 
         it('should create a meme with 2 lines', function () {
-            dummyLines = ['line 1', 'line 2', ];
+            dummyLines = ['line 1', 'line 2'];
             expectedPostBody.form.text0 = dummyLines[0];
             expectedPostBody.form.text1 = dummyLines[1];
 
             sandbox.stub(meme, '_parseLines').returns(dummyLines);
-            requestStub.post = sandbox.stub().returns(Promise.resolve(JSON.stringify(expectedResponse)));
+            requestStub.post = sandbox.stub().returns(
+                Promise.resolve(JSON.stringify(expectedResponse))
+            );
 
-            return meme.create('').finally(url => {
+            return meme.create('').finally(() => {
                 const postCallArgs = requestStub.post.firstCall.args;
                 chai.assert.deepEqual(expectedPostBody, postCallArgs[1]);
             });
@@ -114,10 +119,12 @@ describe('Meme', function () {
         it('should throw error with bad API request', function () {
             expectedResponse.success = false;
 
-            sandbox.stub(meme, '_parseLines').returns(['', ]);
-            requestStub.post = sandbox.stub().returns(Promise.resolve(JSON.stringify(expectedResponse)));
+            sandbox.stub(meme, '_parseLines').returns(['']);
+            requestStub.post = sandbox.stub().returns(
+                Promise.resolve(JSON.stringify(expectedResponse))
+            );
 
-            return meme.create('').catch(err => {
+            return meme.create('').catch((err) => {
                 chai.assert(err);
             });
         });

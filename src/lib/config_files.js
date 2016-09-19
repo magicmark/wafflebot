@@ -1,8 +1,8 @@
-import Promise from 'bluebird';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { LentilBase, LentilDep, } from 'lentildi';
+import Promise from 'bluebird';
+import { LentilBase, LentilDep } from 'lentildi';
 
 Promise.promisifyAll(fs);
 
@@ -71,9 +71,11 @@ export default class ConfigFilesLoader extends LentilBase {
      * @return {Promise} Promise containing result of directory check
      */
     _checkConfigDirExists() {
-        return this.fs.statAsync(this.resolvedConfigDirectory).then(stats => {
+        return this.fs.statAsync(this.resolvedConfigDirectory).then((stats) => {
             if (!stats.isDirectory()) {
-                this.logger.warn(`${this.resolvedConfigDirectory} exists, but it is not a directory.`);
+                this.logger.warn(
+                    `${this.resolvedConfigDirectory} exists, but it is not a directory.`
+                );
                 throw new Error();
             }
         });
@@ -89,18 +91,20 @@ export default class ConfigFilesLoader extends LentilBase {
     _ensureFileExists(filePath, defaultContent) {
         const fullFilePath = this.path.join(this.resolvedConfigDirectory, filePath);
 
-        return this.fs.statAsync(fullFilePath).then(stats => {
-            if (!stats.isFile()) {
-                this.logger.warn(`${fullFilePath} is not a file. Attempting to write it.`);
-                throw new Error();
-            }
+        return this.fs.statAsync(fullFilePath)
+            .then((stats) => {
+                if (!stats.isFile()) {
+                    this.logger.warn(`${fullFilePath} is not a file. Attempting to write it.`);
+                    throw new Error();
+                }
 
-            this.logger.debug(`${fullFilePath} appears to exist; moving on`);
-        })
-            .catch(err => {
+                this.logger.debug(`${fullFilePath} appears to exist; moving on`);
+            })
+            .catch(() => {
                 this.logger.debug(`Creating ${fullFilePath} with default data`);
                 return this.fs.writeFileAsync(fullFilePath, defaultContent);
-            }).catch(err => {
+            })
+            .catch((err) => {
                 throw new Error(`Could not write to ${fullFilePath} - ${err}`);
             });
     }
@@ -115,9 +119,7 @@ export default class ConfigFilesLoader extends LentilBase {
         const fullFilePath = this.path.join(this.resolvedConfigDirectory, ConfigFileMap[jsonFile]);
 
         this.logger.debug(`Reading ${fullFilePath}`);
-        return this.fs.readFileAsync(fullFilePath, 'utf8').then(fileData => {
-            return JSON.parse(fileData);
-        });
+        return this.fs.readFileAsync(fullFilePath, 'utf8').then(fileData => JSON.parse(fileData));
     }
 
     /**
@@ -146,9 +148,13 @@ export default class ConfigFilesLoader extends LentilBase {
             if (this.canCreateDir) {
                 this.logger.debug(`Creating ${this.resolvedConfigDirectory}.`);
                 return this.fs.mkdirAsync(this.resolvedConfigDirectory);
-            } else {
-                throw new Error(`${this.resolvedConfigDirectory} is not a directory that exists.\nIf this is your first time running wafflebot, please create it and ensure it is readable/writable.`);
             }
+
+            throw new Error([
+                `${this.resolvedConfigDirectory} is not a directory that exists.`,
+                'If this is your first time running wafflebot,',
+                'please create it and ensure it is readable/writable.',
+            ].join('\n'));
         });
     }
 
@@ -160,13 +166,11 @@ export default class ConfigFilesLoader extends LentilBase {
     filesReady() {
         const exampleConfigPath = this.path.join(__dirname, '../config.example.json');
 
-        return this.fs.readFileAsync(exampleConfigPath).then(exampleConfig => {
-            return Promise.join(
-                this._ensureFileExists(ConfigFileMap[JSONFiles.ROOMS], '[]'),
-                this._ensureFileExists(ConfigFileMap[JSONFiles.WATCH_USERS], '{}'),
-                this._ensureFileExists(ConfigFileMap[JSONFiles.CONFIG], exampleConfig)
-            );
-        });
+        return this.fs.readFileAsync(exampleConfigPath).then(exampleConfig => Promise.join(
+            this._ensureFileExists(ConfigFileMap[JSONFiles.ROOMS], '[]'),
+            this._ensureFileExists(ConfigFileMap[JSONFiles.WATCH_USERS], '{}'),
+            this._ensureFileExists(ConfigFileMap[JSONFiles.CONFIG], exampleConfig)
+        ));
     }
 
     /**
@@ -177,10 +181,16 @@ export default class ConfigFilesLoader extends LentilBase {
     checkConfigFileSanity() {
         this.logger.debug('Checking the config files');
 
-        return this.getFileJson(JSONFiles.CONFIG).then(configJson => {
-            // TODO: Improve this check to validate all config files before they have a chance to crash in prod
+        return this.getFileJson(JSONFiles.CONFIG).then((configJson) => {
+            // TODO: Improve this check to validate all config files
+            // before they have a chance to crash in prod
 
-            if (!configJson || !configJson.irc || configJson.irc.server == 'irc.example.com') {
+            if (!configJson || !configJson.irc || configJson.irc.server === 'irc.example.com') {
+                const configFilePath = this.path.join(
+                    this.resolvedConfigDirectory,
+                    ConfigFileMap[JSONFiles.CONFIG]
+                );
+
                 this.logger.debug('Config file has not been configured');
 
                 const errorMessage = [

@@ -1,7 +1,6 @@
-import Promise from 'bluebird';
 import request from 'request-promise';
-
-import { LentilBase, LentilDep, } from 'lentildi';
+import Promise from 'bluebird';
+import { LentilBase, LentilDep } from 'lentildi';
 
 export default class Meme extends LentilBase {
 
@@ -77,7 +76,7 @@ export default class Meme extends LentilBase {
 
         return this.request.post('https://api.imgflip.com/caption_image', {
             form: params,
-        }).then(body => {
+        }).then((body) => {
             const jsonBody = JSON.parse(body);
 
             if (jsonBody.success && jsonBody.data && jsonBody.data.url) {

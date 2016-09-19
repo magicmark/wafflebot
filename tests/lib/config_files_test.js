@@ -1,21 +1,21 @@
 import 'mocha';
 
 import chai from 'chai';
-import sinon from 'sinon';
-import ConfigFilesLoader, { JSONFiles, } from '../../src/lib/config_files.js';
-
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
-
+import sinon from 'sinon';
 import Promise from 'bluebird';
+
+import ConfigFilesLoader from '../../src/lib/config_files.js';
 import {
     LoggerStub,
 } from '../../testing/stub_factories.js';
 
+chai.use(chaiAsPromised);
+
+
 describe('Config Files Loader', function () {
     let configFilesLoader;
     let sandbox;
-    let dummyMessage;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -57,7 +57,10 @@ describe('Config Files Loader', function () {
 
             ConfigFilesLoader.prototype._parseConfigDir.call(configFilesLoader);
 
-            chai.assert.equal(configFilesLoader.resolvedConfigDirectory, '/current/cwd/relative/path');
+            chai.assert.equal(
+                configFilesLoader.resolvedConfigDirectory,
+                '/current/cwd/relative/path'
+            );
         });
 
 

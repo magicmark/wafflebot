@@ -1,10 +1,10 @@
 import 'mocha';
-import sinon from 'sinon';
-import chai from 'chai';
-import Promise from 'bluebird';
 
-import Message from '../../src/lib/message.js';
+import chai from 'chai';
+import sinon from 'sinon';
+
 import Command from '../../src/lib/command.js';
+import Message from '../../src/lib/message.js';
 
 describe('Message', function () {
     let message;
@@ -97,10 +97,10 @@ describe('Message', function () {
                 'wafflebot: meme whatever': Command.MEME,
             };
 
-            for (const body in mappings) {
+            Object.keys(mappings).forEach((body) => {
                 message._body = body;
                 chai.assert.equal(message.command, mappings[body]);
-            }
+            });
         });
 
         it('should be give default command', function () {

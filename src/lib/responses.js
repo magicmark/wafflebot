@@ -1,13 +1,13 @@
+import fs from 'fs';
 import path from 'path';
+import Promise from 'bluebird';
+import { LentilBase, LentilDep } from 'lentildi';
+
 import BigWaffle from './../bin/waffle.js';
 import WaffleHistory from './../bin/waffle_history.js';
 
-
-import Promise from 'bluebird';
-import fs from 'fs';
 Promise.promisifyAll(fs);
 
-import { LentilBase, LentilDep, } from 'lentildi';
 
 export default class Responses extends LentilBase {
 
@@ -34,7 +34,7 @@ export default class Responses extends LentilBase {
     _loadResponses() {
         const responsesPath = this.path.join(__dirname, '../responses.json');
 
-        return this.fs.readFileAsync(responsesPath, 'utf8').then(data => {
+        return this.fs.readFileAsync(responsesPath, 'utf8').then((data) => {
             const responsesJson = JSON.parse(data);
             for (const response of responsesJson) {
                 this.add(response);
@@ -42,20 +42,25 @@ export default class Responses extends LentilBase {
         });
     }
 
-    _compileResponseBody(responseBody, message, regexMatches, depth) {
-        depth = depth || 1;
+    _compileResponseBody(responseBody, message, regexMatches, calledDepth) {
+        const depth = calledDepth || 1;
 
         if (depth > 2) {
             return responseBody;
         }
 
-        const wafffleHistory = this._compileResponseBody(this.WaffleHistory, message, regexMatches, ++depth);
+        const wafffleHistory = this._compileResponseBody(
+            this.WaffleHistory,
+            message,
+            regexMatches,
+            depth + 1
+        );
 
         return responseBody
             .replace(/{waffle}/gi, this.BigWaffle)
             .replace(/{author}/gi, message.author)
             .replace(/{waffleHistory}/i, wafffleHistory)
-            .replace(/{\$[0-9]+}/gi, (match) => regexMatches.shift());
+            .replace(/{\$[0-9]+}/gi, () => regexMatches.shift());
     }
 
     _getCompiledResponse(response, message, regexMatches) {
@@ -73,7 +78,7 @@ export default class Responses extends LentilBase {
         return new RegExp(compiledRegexString, 'i');
     }
 
-    add({ match, body, roomGuard = false, requiresPrefix = false, delay = 0, }) {
+    add({ match, body, roomGuard = false, requiresPrefix = false, delay = 0 }) {
         this._responses.set(match, {
             regex: match,
             body,
@@ -92,7 +97,11 @@ export default class Responses extends LentilBase {
 
             if (match) {
                 // Get compiled body
-                const compiledResponseBody = this._getCompiledResponse(response, message, match.slice(1));
+                const compiledResponseBody = this._getCompiledResponse(
+                    response,
+                    message,
+                    match.slice(1)
+                );
 
                 // Return clone of the response object, with the body property
                 // replaced with the compiled response body.
@@ -101,6 +110,8 @@ export default class Responses extends LentilBase {
                 });
             }
         }
+
+        return null;
     }
 
 }

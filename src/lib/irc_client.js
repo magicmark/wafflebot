@@ -8,7 +8,7 @@ const config = {
     sasl: false,
 };
 
-export default ({ server, password, botname, _irc = irc, }) => {
+export default ({ server, password, botname, _irc = irc }) => {
     config.password = password;
     config.userName = botname;
     config.realName = botname;

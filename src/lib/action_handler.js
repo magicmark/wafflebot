@@ -1,10 +1,10 @@
 import Promise from 'bluebird';
-import { LentilBase, LentilDep, } from 'lentildi';
+import { LentilBase, LentilDep } from 'lentildi';
 
 import Meme from './meme.js';
 import Responses from './responses.js';
 import WatchList from './watchlist.js';
-import ConfigFilesLoader, { JSONFiles, } from './config_files.js';
+import ConfigFilesLoader, { JSONFiles } from './config_files.js';
 
 export default class ActionHandler extends LentilBase {
 
@@ -82,7 +82,7 @@ export default class ActionHandler extends LentilBase {
 
         // Make it permanent
         return this.configFilesLoader.getFileJson(JSONFiles.ROOMS)
-            .then(roomsJson => {
+            .then((roomsJson) => {
                 if (roomsJson.indexOf(channelToJoin) === -1) {
                     roomsJson.push(channelToJoin);
                 }
@@ -93,7 +93,7 @@ export default class ActionHandler extends LentilBase {
                 this.client.say(message.author, `I have joined ${channelToJoin}!`);
                 this.logger.debug(`Saved room ${channelToJoin} to file`);
             })
-            .catch(err => {
+            .catch((err) => {
                 this.client.say(message.author,
                     `There was a potential problem permanently joining ${channelToJoin}`
                 );
@@ -171,7 +171,7 @@ export default class ActionHandler extends LentilBase {
         if (message.parts[1] === 'subscribe' && email) {
             return this.watchlist.subscribe(message.author, email).then(() => {
                 this.client.say(message.author, `Successfully set up notifications to ${email}!`);
-            }).catch(error => {
+            }).catch((error) => {
                 this.client.say(message.author,
                     `There was an error setting up notifications:\n${error}.`
                 );
@@ -183,7 +183,7 @@ export default class ActionHandler extends LentilBase {
                 this.client.say(message.author,
                     'Successfully unsubscribed from notifications.'
                 );
-            }).catch(error => {
+            }).catch((error) => {
                 this.client.say(message.author,
                     `There was an error unsubscribing from notifications:\n${error}.`
                 );
@@ -204,7 +204,7 @@ export default class ActionHandler extends LentilBase {
      * @return {Promise} Promise containing the result of the action
      */
     makeMeme(message) {
-        return this.meme.create(message.body).then(result => {
+        return this.meme.create(message.body).then((result) => {
             this.client.say(message.channel, `${message.author}: ${result}`);
         });
     }
