@@ -1,4 +1,9 @@
-# wafflebot
+wafflebot
+=========
+[![travis](https://travis-ci.org/magicmark/wafflebot.svg?branch=master)](https://travis-ci.org/wafflebot/LentilDI)
+[![Coverage Status](https://coveralls.io/repos/github/magicmark/wafflebot/badge.svg?branch=master)](https://coveralls.io/github/magicmark/wafflebot?branch=master)
+[![npm](https://img.shields.io/npm/v/wafflebot.svg)](https://www.npmjs.com/package/wafflebot)
+
 An IRC wafflebot.
 
 ![](http://i.imgur.com/YMLz9gi.png)
