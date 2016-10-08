@@ -36,7 +36,7 @@
     "sinon": "^1.17.4"
   },
   "scripts": {
-    "prepublish": "make build",
+    "prepublish": "make dist",
     "start": "wafflebot",
     "test": "NODE_PATH=. nyc mocha -C --require babel-core/register tests/**.js tests/**/*.js"
   },
