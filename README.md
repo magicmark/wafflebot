@@ -31,28 +31,29 @@ Protip: You can enable browser/mobile notifications from wafflebot:
 - http://www.howtogeek.com/171178/how-to-get-notifications-for-only-the-emails-you-care-about-with-gmail-on-android/
 
 ## How to run:
-So you want to run your own Wafflebot? Good decision!
+So you want to run your own Wafflebot? Good decision! Install via npm or git
 
-Create a `config.json` file with the following sample content
-```JSON
-{
-	"mail_transport_string": "smtps://example%40gmail.com:passwordhere@smtp.gmail.com",
-	"irc_server": "irc.example.com",
-	"irc_server_password": "serverpassword"
-}
+```bash
+npm install wafflebot
+```
+
+or to build from source via git:
+
+```bash
+git clone git@github.com/magicmark/wafflebot
+cd wafflebot
+make start
 ```
 
 Note: Wafflebot uses [nodemailer](https://github.com/nodemailer/nodemailer) for sending emails - see their documentation for info about the `mail_transport_string`
 
 You can then run wafflebot by running
 ```bash
-node wafflebot.js
+npm start
 ```
 
 ## TODO
-- Refactor to have a 'message' class rather than pass around room, to, message arguments etc
 - Add more delicious british foods
-- Maybe make rooms.json a hash table? Not a big deal really
 
 ## Contributing
 Go for it! Submit a pull request :)

@@ -1,22 +1,22 @@
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: 18d7035de5388cc7775be57f529c154bf541aab9
+    sha: 4c90c9557da7c0d695d6a729bae8b1de4e496cbf
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
+    -   id: check-added-large-files
     -   id: check-json
     -   id: check-merge-conflict
--   repo: git://github.com/pre-commit/mirrors-eslint
-    sha: v3.5.0
-    hooks:
-    -   id: eslint
-        additional_dependencies:
-        - eslint
-        - eslint-config-airbnb
-        - eslint-plugin-jsx-a11y
-        - eslint-plugin-react
-        - eslint-plugin-import
+    -   id: check-symlinks
+    -   id: end-of-file-fixer
+    -   id: name-tests-test
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
 -   repo: git://github.com/magicmark/pre-commit-es6-imports-reorder
     sha: 9ca7b2274eef5355d550b6cb7e2cd5e9ee518d2f
     hooks:
     -   id: reorder-es6-imports
+-   repo: local
+    hooks:
+    -   id: eslint
+        name: eslint
+        entry: node_modules/.bin/eslint
+        language: script
+        files: \.js$

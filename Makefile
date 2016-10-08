@@ -7,7 +7,7 @@ venv: Makefile requirements-dev.txt
 	venv/bin/pre-commit install -f --install-hooks
 
 .PHONY: test
-test: venv build
+test: venv dist
 	# Run unit tests + coverage
 	npm test
 	# Run pre-commit hooks
@@ -16,7 +16,7 @@ test: venv build
 start: dist
 	npm start
 
-build: node_modules
+dist: node_modules
 	./node_modules/.bin/babel -d dist src --no-comments
 	cp src/*.json dist/
 
