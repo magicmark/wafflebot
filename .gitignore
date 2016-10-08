@@ -1,12 +1,13 @@
+*.swp
 .DS_Store
 ._*
 .nyc_output
-*.swp
 build
 config.json
 coverage
 dist
 jsdoc
+node_env-default
 node_modules
 npm-debug.log
 venv
