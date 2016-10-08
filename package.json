@@ -37,7 +37,7 @@
   },
   "scripts": {
     "prepublish": "make dist",
-    "start": "wafflebot",
+    "start": "bin/wafflebot",
     "test": "NODE_PATH=. nyc mocha -C --require babel-core/register tests/**.js tests/**/*.js"
   },
   "repository": {
