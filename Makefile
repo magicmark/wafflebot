@@ -37,9 +37,10 @@ eslint-fix: node_modules
 	node_modules/.bin/eslint --fix .
 
 clean:
-	rm -rf dist
-	rm -rf coverage
 	rm -rf .nyc_output
+	rm -rf coverage
+	rm -rf dist
 	rm -rf jsdoc
+	rm -rf node_env-default
 	rm -rf node_modules
 	rm -rf venv
