@@ -1,8 +1,8 @@
 {
     "botname": "wafflebot",
     "irc": {
-      "server": "irc.example.com",
-      "password": "serverpassword"
+        "server": "irc.example.com",
+        "password": "serverpassword"
     },
     "imgflip": {
         "username": "usernamehere",
