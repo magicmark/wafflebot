@@ -20,6 +20,10 @@
         "body": "{waffle}"
     },
     {
+        "match": "./waf me",
+        "body": "{waffle}"
+    }
+    {
         "match": "whois wafflebot",
         "body": "{waffleHistory}"
     },
@@ -63,5 +67,5 @@
         "match": "help",
         "body": "https://github.com/magicmark/wafflebot",
         "requiresPrefix": true
-    }
+    }   
 ]
