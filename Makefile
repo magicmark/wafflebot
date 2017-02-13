@@ -1,4 +1,16 @@
+export DOCKER_TAG ?= wafflebot-$(USER)
+
 all: test
+
+.PHONY: docker-build
+docker-build:
+	docker build -t $(DOCKER_TAG) .
+
+.PHONY: docker-run
+docker-run: docker-build
+	docker run -it --rm --name $(DOCKER_TAG) \
+		-v "$(HOME)/.wafflebot":/root/.wafflebot \
+		$(DOCKER_TAG)
 
 venv: Makefile requirements-dev.txt
 	rm -rf venv

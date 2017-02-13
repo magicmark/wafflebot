@@ -1,0 +1,4 @@
+#!/bin/bash -eu
+pushd /code
+npm install --production
+npm start
