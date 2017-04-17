@@ -31,26 +31,18 @@ Protip: You can enable browser/mobile notifications from wafflebot:
 - http://www.howtogeek.com/171178/how-to-get-notifications-for-only-the-emails-you-care-about-with-gmail-on-android/
 
 ## How to run:
-So you want to run your own Wafflebot? Good decision! Install via npm or git
+So you want to run your own Wafflebot? Good decision!
 
-```bash
-npm install wafflebot
-```
-
-or to build from source via git:
+Suggested method of running Dafflebot is inside Docker.
 
 ```bash
 git clone git@github.com/magicmark/wafflebot
 cd wafflebot
-make start
+make docker-run
 ```
 
-Note: Wafflebot uses [nodemailer](https://github.com/nodemailer/nodemailer) for sending emails - see their documentation for info about the `mail_transport_string`
-
-You can then run wafflebot by running
-```bash
-npm start
-```
+## Mailing
+Note: Wafflebot uses [nodemailer](https://github.com/nodemailer/nodemailer) for sending emails - see their documentation for info about the `mail_transport_string`.
 
 ## TODO
 - Add more delicious british foods
