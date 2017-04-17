@@ -33,7 +33,7 @@ Protip: You can enable browser/mobile notifications from wafflebot:
 ## How to run:
 So you want to run your own Wafflebot? Good decision!
 
-Suggested method of running Dafflebot is inside Docker.
+Suggested method of running Wafflebot is inside Docker.
 
 ```bash
 git clone git@github.com/magicmark/wafflebot
