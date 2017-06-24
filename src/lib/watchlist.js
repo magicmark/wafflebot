@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import { LentilBase, LentilDep } from 'lentildi';
 
 import Mailer from './mailer.js';
-import ConfigFilesLoader, { JSONFiles } from './config_files.js';
+import ConfigFilesLoader, { JSONFile } from './config_files.js';
 
 /**
  * WatchList, to check all incoming messages to see if we need to notify anyone.
@@ -31,7 +31,7 @@ export default class WatchList extends LentilBase {
     }
 
     _loadWatchedUsers() {
-        return this.configFilesLoader.getFileJson(JSONFiles.WATCH_USERS).then((users) => {
+        return this.configFilesLoader.getFileJson(JSONFile.WATCH_USERS).then((users) => {
             this.watchedUsers = users;
             this._buildRegexCache();
         })
@@ -77,7 +77,7 @@ export default class WatchList extends LentilBase {
 
         // save users object to file
         return Promise.resolve().then(() => this.configFilesLoader.writeFileJson(
-            JSONFiles.WATCH_USERS,
+            JSONFile.WATCH_USERS,
             this.watchedUsers
         ));
     }
@@ -97,7 +97,7 @@ export default class WatchList extends LentilBase {
 
         // save users object to file
         return Promise.resolve().then(() => this.configFilesLoader.writeFileJson(
-            JSONFiles.WATCH_USERS,
+            JSONFile.WATCH_USERS,
             this.watchedUsers
         ));
     }

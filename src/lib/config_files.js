@@ -7,19 +7,29 @@ import { LentilBase, LentilDep } from 'lentildi';
 Promise.promisifyAll(fs);
 
 /**
- * Enum types for json files
+ * Enum type for json files
+ *
+ * @readonly
+ * @enum {Symbol}
  */
-export const JSONFiles = {
+export const JSONFile = {
     WATCH_USERS: Symbol('WATCH_USERS'),
     ROOMS: Symbol('ROOMS'),
     CONFIG: Symbol('CONFIG'),
 };
 
+/**
+ * Mapping for json files paths
+ *
+ * @type {Object.<JSONFile, string>}
+ * @readonly
+ */
 export const ConfigFileMap = {
-    [JSONFiles.WATCH_USERS]: 'watched_users.json',
-    [JSONFiles.ROOMS]: 'rooms.json',
-    [JSONFiles.CONFIG]: 'config.json',
+    [JSONFile.WATCH_USERS]: 'watched_users.json',
+    [JSONFile.ROOMS]: 'rooms.json',
+    [JSONFile.CONFIG]: 'config.json',
 };
+
 
 export default class ConfigFilesLoader extends LentilBase {
 
@@ -112,7 +122,7 @@ export default class ConfigFilesLoader extends LentilBase {
     /**
      * Reads the specified file
      *
-     * @param  {JSONFiles} jsonFile - The file enum
+     * @param  {JSONFile} jsonFile - The file enum
      * @return {Promise} Promise containing the file
      */
     getFileJson(jsonFile) {
@@ -125,7 +135,7 @@ export default class ConfigFilesLoader extends LentilBase {
     /**
      * Writes the given json to the given file
      *
-     * @param  {JSONFiles} jsonFile - The file enum
+     * @param  {JSONFile} jsonFile - The file enum
      * @param  {object} jsonData - The file json
      * @return {Promise} Promise containing the write result
      */
@@ -167,9 +177,9 @@ export default class ConfigFilesLoader extends LentilBase {
         const exampleConfigPath = this.path.join(__dirname, '../config.example.json');
 
         return this.fs.readFileAsync(exampleConfigPath).then(exampleConfig => Promise.join(
-            this._ensureFileExists(ConfigFileMap[JSONFiles.ROOMS], '[]'),
-            this._ensureFileExists(ConfigFileMap[JSONFiles.WATCH_USERS], '{}'),
-            this._ensureFileExists(ConfigFileMap[JSONFiles.CONFIG], exampleConfig)
+            this._ensureFileExists(ConfigFileMap[JSONFile.ROOMS], '[]'),
+            this._ensureFileExists(ConfigFileMap[JSONFile.WATCH_USERS], '{}'),
+            this._ensureFileExists(ConfigFileMap[JSONFile.CONFIG], exampleConfig)
         ));
     }
 
@@ -181,14 +191,14 @@ export default class ConfigFilesLoader extends LentilBase {
     checkConfigFileSanity() {
         this.logger.debug('Checking the config files');
 
-        return this.getFileJson(JSONFiles.CONFIG).then((configJson) => {
+        return this.getFileJson(JSONFile.CONFIG).then((configJson) => {
             // TODO: Improve this check to validate all config files
             // before they have a chance to crash in prod
 
             if (!configJson || !configJson.irc || configJson.irc.server === 'irc.example.com') {
                 const configFilePath = this.path.join(
                     this.resolvedConfigDirectory,
-                    ConfigFileMap[JSONFiles.CONFIG]
+                    ConfigFileMap[JSONFile.CONFIG]
                 );
 
                 this.logger.debug('Config file has not been configured');

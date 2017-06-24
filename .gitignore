@@ -10,3 +10,4 @@ jsdoc
 node_modules
 npm-debug.log
 venv
+doc

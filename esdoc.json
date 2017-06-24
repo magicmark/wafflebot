@@ -1,0 +1,13 @@
+{
+    "source": "./src",
+    "destination": "./doc/out/esdoc",
+    "access": ["public", "protected", "private"],
+    "debug": false,
+    "index": "./README.md",
+    "package": "./package.json",
+    "title": "Wafflebot",
+    "test": {
+        "type": "mocha",
+        "source": "./tests"
+    }
+}

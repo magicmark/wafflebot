@@ -8,7 +8,7 @@ import BigWaffle from './bin/waffle.js';
 import Mailer from './lib/mailer.js';
 import Meme from './lib/meme.js';
 import MessageHandler from './lib/message_handler.js';
-import ConfigFilesLoader, { JSONFiles } from './lib/config_files.js';
+import ConfigFilesLoader, { JSONFile } from './lib/config_files.js';
 
 export default class Wafflebot {
 
@@ -98,7 +98,7 @@ export default class Wafflebot {
         client.addListener('registered', () => {
             this.logger.info(`Wafflebot connected to ${this.config.irc.server}`);
 
-            configFilesLoader.getFileJson(JSONFiles.ROOMS).then((roomsJson) => {
+            configFilesLoader.getFileJson(JSONFile.ROOMS).then((roomsJson) => {
                 roomsJson.forEach((room) => {
                     this.logger.debug(`Auto joining ${room}`);
                     client.join(room);

@@ -4,7 +4,7 @@ import { LentilBase, LentilDep } from 'lentildi';
 import Meme from './meme.js';
 import Responses from './responses.js';
 import WatchList from './watchlist.js';
-import ConfigFilesLoader, { JSONFiles } from './config_files.js';
+import ConfigFilesLoader, { JSONFile } from './config_files.js';
 
 export default class ActionHandler extends LentilBase {
 
@@ -85,13 +85,13 @@ export default class ActionHandler extends LentilBase {
         this.logger.info(`Joined room ${channelToJoin}`);
 
         // Make it permanent
-        return this.configFilesLoader.getFileJson(JSONFiles.ROOMS)
+        return this.configFilesLoader.getFileJson(JSONFile.ROOMS)
             .then((roomsJson) => {
                 if (roomsJson.indexOf(channelToJoin) === -1) {
                     roomsJson.push(channelToJoin);
                 }
 
-                return this.configFilesLoader.writeFileJson(JSONFiles.ROOMS, roomsJson);
+                return this.configFilesLoader.writeFileJson(JSONFile.ROOMS, roomsJson);
             })
             .then(() => {
                 this.client.say(message.author, `I have joined ${channelToJoin}!`);

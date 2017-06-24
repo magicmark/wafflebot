@@ -1,5 +1,8 @@
 /**
- * Enum types for message command actions
+ * Enum type for message command actions
+ *
+ * @readonly
+ * @enum {Symbol}
  */
 export default {
     JOIN: Symbol('JOIN'),
