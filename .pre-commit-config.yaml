@@ -9,10 +9,6 @@
     -   id: name-tests-test
     -   id: requirements-txt-fixer
     -   id: trailing-whitespace
--   repo: git://github.com/magicmark/pre-commit-es6-imports-reorder
-    sha: 9ca7b2274eef5355d550b6cb7e2cd5e9ee518d2f
-    hooks:
-    -   id: reorder-es6-imports
 -   repo: local
     hooks:
     -   id: eslint
