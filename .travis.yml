@@ -1,0 +1,26 @@
+sudo: false
+language: python
+python:
+    - "3.5"
+install:
+    - nvm install 6
+before_install: yarn global add greenkeeper-lockfile@1
+before_script: greenkeeper-lockfile-update
+after_script: greenkeeper-lockfile-upload
+env:
+    global:
+        - COVERALLS_SERVICE_NAME=travis-ci
+        - COVERALLS_REPO_TOKEN=MUPeiBPH7d1yj7tt2yt3VNkkllD40Q9b3
+script:
+    - make test
+    - make coveralls
+deploy:
+    provider: npm
+    email: mark@larah.me
+    skip_cleanup: true
+    api_key:
+        secure: aPwZK9gPKzYuYg0bnJ1lyuZ1Y9S8KdpspcxcAES4PWjw1VvKK08AfEnk6BzU/p87ri7X7p4CRtXJPHI+/BFpwm7lbZign3xH0Xn0CN2o4LUMXla2k7pqBVgO60DH8eeWvXSSf05A9PKr6UU5Nokb0t2NNj/tQK6vCHVvaA2bgpVmbACy7NKN3t0DxDdUBNNUYKoofvAicHvFIXqBdYqivNd48XmncJjt52Boitg4RKuIT+VtZToURlejzxRfe38WkoSMrxkFOCukn1K2ANFB0VMzpbyl6sZuevantZDfQqa/6nhNJYOxWuShEZ5CwGxH63n5Rgn6BBuSGCnOfRbmX/pwVX6voyFML+LJDRw2Q5+/7NSnuV9Eth1uV3lsFmJ3jkKGMXTvIIUx9Fiw0GulhKxW9FieJ9r6GoeYZwwKYvseqULDCfxw5v6XWeB9bzCrPmRq2YQvre3ctQCboiqTteNhAeY7JaQIZjgsIBCKiIrQvtnsaC8W3AGe3VVXt1VA5fOd7e9dbUR1J+Phi2N/iSei0F2MGRzb/ZsuAhoti6uymohenl2hoaFu9aaopLRhScRc+a4UD05M2q3cg3sbxe4q716gUrz11JsYQn0+jgQUcvnOfIehLcxC7n1RB2w+qr1IQo81xBpnTDiva2R1EFU41yzICr8TBkV0iMA6NQI=
+    on:
+        branch: master
+        tags: true
+        repo: magicmark/wafflebot
