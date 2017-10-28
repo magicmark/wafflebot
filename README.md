@@ -1,5 +1,7 @@
 wafflebot
 =========
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/magicmark/wafflebot.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/magicmark/wafflebot.svg?branch=master)](https://travis-ci.org/magicmark/wafflebot)
 [![Coverage Status](https://coveralls.io/repos/github/magicmark/wafflebot/badge.svg?branch=master)](https://coveralls.io/github/magicmark/wafflebot?branch=master)
 [![npm](https://img.shields.io/npm/v/wafflebot.svg)](https://www.npmjs.com/package/wafflebot)
