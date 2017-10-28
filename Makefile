@@ -35,7 +35,7 @@ dist: node_modules
 node_modules:
 	npm install
 
-coveralls: coverage node_modules
+coveralls: test
 	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: jsdoc
