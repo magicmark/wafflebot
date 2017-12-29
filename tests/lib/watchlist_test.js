@@ -38,6 +38,9 @@ describe('WatchList', function () {
                 dave: {
                     email: 'dave@reddwarf.com',
                 },
+                'dave|wfh': {
+                    email: 'dave+wfh@reddwarf.com',
+                },
             };
 
             watchlist.configFilesLoader = {
@@ -65,28 +68,57 @@ describe('WatchList', function () {
         });
     });
 
-    it('#_getRegexForUser should match a user name in a message correctly', function () {
-        const regex = watchlist._getRegexForUser('dave');
-        const validMessages = [
-            'hello dave',
-            'dave',
-            'dave hello',
-            'dave: hello',
-            'hello dave hello',
-            'hello dave- hello',
-        ];
-        const invalidMessage = [
-            'daveaskdjh',
-            'asdkajdave',
-            'asdaddaveasdas',
-        ];
+    describe('#_getRegexForUser', function () {
+        it('should match a user name in a message correctly', function () {
+            const regex = watchlist._getRegexForUser('dave');
+            const validMessages = [
+                'hello dave',
+                'dave',
+                'dave hello',
+                'dave: hello',
+                'hello dave hello',
+                'hello dave- hello',
+            ];
+            const invalidMessage = [
+                'daveaskdjh',
+                'asdkajdave',
+                'asdaddaveasdas',
+            ];
 
-        validMessages.forEach((message) => {
-            chai.assert.isOk(regex.test(message), `Expected "${message}" to match`);
+            validMessages.forEach((message) => {
+                chai.assert.isOk(regex.test(message), `Expected "${message}" to match`);
+            });
+
+            invalidMessage.forEach((message) => {
+                chai.assert.isNotOk(regex.test(message), `Expected "${message}" not to match`);
+            });
         });
 
-        invalidMessage.forEach((message) => {
-            chai.assert.isNotOk(regex.test(message), `Expected "${message}" not to match`);
+        it('should escape user names', function () {
+            const regex = watchlist._getRegexForUser('dave|wfh');
+            const validMessages = [
+                'hello dave|wfh',
+                'dave|wfh',
+                'dave|wfh hello',
+                'dave|wfh: hello',
+                'hello dave|wfh hello',
+                'hello dave|wfh- hello',
+            ];
+            const invalidMessage = [
+                'dave|wfhaskdjh',
+                'asdkajdave|wfh',
+                'asdaddave|wfhasdas',
+                'hello dave',
+                'hello wfh',
+            ];
+
+            validMessages.forEach((message) => {
+                chai.assert.isOk(regex.test(message), `Expected "${message}" to match`);
+            });
+
+            invalidMessage.forEach((message) => {
+                chai.assert.isNotOk(regex.test(message), `Expected "${message}" not to match`);
+            });
         });
     });
 
