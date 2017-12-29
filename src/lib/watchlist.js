@@ -41,7 +41,9 @@ export default class WatchList extends LentilBase {
     }
 
     _getRegexForUser(user) {
-        return new RegExp(`(^|\\s)${user}($|:|-|\\s)`, 'i');
+        // Escape regexp special characters allowed in IRC nicks: \^|{}[]
+        const escapedUser = user.replace(/[\\^|{}[\]]/g, '\\$&');
+        return new RegExp(`(^|\\s)${escapedUser}($|[-:\\s])`, 'i');
     }
 
     _buildRegexCache() {
